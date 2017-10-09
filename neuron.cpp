@@ -2,7 +2,7 @@
 #include <iostream>
 
 Neuron::Neuron() //constructor
-	: potential_(0.01), nb_spikes_(0), resistance_(0), capacity_(1), threshold_(0.02), refractory_time_(0) {};
+	: potential_(0), nb_spikes_(0), resistance_(20), capacity_(1), threshold_(20), refractory_time_(0) {};
 	
 Neuron::Neuron(const Neuron& another) //destructor
 	: potential_(another.potential_), nb_spikes_(another.potential_), time_spikes_(another.time_spikes_) {};
@@ -59,7 +59,7 @@ void Neuron::update(double time, double ext_input) { //update neuron state
 		
 		std::cout << "Potential > threshold" << std::endl;
 
-		refractory_time_ = 2e-3; //potential has reached threshold so neuron is refractory
+		refractory_time_ = 2; //potential has reached threshold so neuron is refractory
 			
 		time_spikes_.push_back(time); //store spike time
 			

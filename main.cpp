@@ -7,13 +7,13 @@
 int main()
 {
 	double t_start(0.0);
-	double t_stop(0.1);
+	double t_stop(400);
 	
 	double a, b;
 	
 	//the user chooses the time interval when Iext≠0
 	do {
-		std::cout << "Enter an interval [a,b) in seconds with a≥0 and b>a " << std::endl;
+		std::cout << "Enter an interval [a,b) in ms with a≥0 and b>a " << std::endl;
 		std::cin >> a >> b;
 	} while (a<0 or b<=a);
 	
@@ -22,7 +22,7 @@ int main()
 	std::cout << "Enter your input current in mV " << std::endl;
 	std::cin >> ext_input;
 	
-	double dt(0.001); //h = simulation step
+	double dt(0.1); //h = simulation step
 	
 		
 	
@@ -39,8 +39,9 @@ int main()
 		double Iext; //Iext that we are going to use
 	
 		while(simtime < t_stop) {
+			std::cout << "Simtime: " << simtime << " ms" << std::endl;
 			
-			if (a <= simtime < b) { //choose the correct input to use for this simulation
+			if (a <= simtime and simtime < b) { //choose the correct input to use for this simulation
 				Iext = ext_input;
 			} else {
 				Iext = 0;
@@ -51,12 +52,12 @@ int main()
 			
 			if (neuron.isRefractory()) {
 				std::cout << "Neuron is refractory" << std::endl; 
-				neuron.setPotential(10); // reset potential 
+				neuron.setPotential(0); // reset potential 
 			} else {
 				std::cout << "Neuron is not refractory" << std::endl;
 				neuron.update(simtime, Iext); //update neuron state
 				
-				double tau(0.02); //resistance * capacity
+				double tau(20); //resistance * capacity
 				double const_e( exp(-dt/tau) );
 				neuron.setResistance(tau / neuron.getCapacity());
 				neuron.setPotential(const_e * neuron.getPotential() + Iext * neuron.getResistance() * (1 - const_e)); //compute new potential
@@ -64,7 +65,7 @@ int main()
 			
 			std::cout << "New neuron potential : " << neuron.getPotential() << std::endl;
 			
-			output << "Time: " << simtime << std::endl;
+			output << "Time: " << simtime << " ms" << std::endl;
 			output << "Membrane potential: " << neuron.getPotential() << std::endl;	
 			
 			simtime+= dt;
