@@ -22,6 +22,16 @@ int main()
 	std::cout << "Enter your input current in mV " << std::endl;
 	std::cin >> ext_input;
 	
+	int nb_neurons;
+	std::cout << "How many neurons do you want ?" << std::endl;
+	std::cin >> nb_neurons;
+	
+	std::vector<Neuron*> neurons;
+	for (int i(0); i < nb_neurons; ++i) {
+		neurons.push_back(new Neuron);
+	}
+	
+	const double J = 0.1; //amplitude en mV
 	double dt(0.1); //h = simulation step
 	
 		
@@ -39,7 +49,7 @@ int main()
 		double Iext; //Iext that we are going to use
 	
 		while(simtime < t_stop) {
-			std::cout << "Simtime: " << simtime << " ms" << std::endl;
+			//std::cout << "Simtime: " << simtime << " ms" << std::endl;
 			
 			if (a <= simtime and simtime < b) { //choose the correct input to use for this simulation
 				Iext = ext_input;
@@ -47,33 +57,48 @@ int main()
 				Iext = 0;
 			}
 			
-			neuron.setRefractory_time(dt); //substract the simulation step from refractory time, doesn't matter is negative
-			std::cout << "Neuron refractory time : " << neuron.getRefractory_time() << std::endl;
+			for (int i(0); i < neurons.size(); ++i) {
+				neurons[i]->setClock(simtime);
+				neurons[i]->setRefractory_time(dt); //substract the simulation step from refractory time, doesn't matter is negative
+				//std::cout << "Neuron refractory time : " << neurons[i]->getRefractory_time() << std::endl;
 			
-			if (neuron.isRefractory()) {
-				std::cout << "Neuron is refractory" << std::endl; 
-				neuron.setPotential(0); // reset potential 
-			} else {
-				std::cout << "Neuron is not refractory" << std::endl;
-				neuron.update(simtime, Iext); //update neuron state
+				if (neurons[i]->isRefractory()) {
+					//std::cout << "Neuron is refractory" << std::endl; 
+					neurons[i]->setPotential(0.01); // reset potential 
+				} else {
+					//std::cout << "Neuron is not refractory" << std::endl;
+					bool spike(neurons[i]->update(simtime, Iext)); //update neuron state
+					//std::cout << "etat du neurone: " << spike << std::endl;
+					
+					double tau(20); //resistance * capacity
+					double const_e( exp(-dt/tau) );
+					neurons[i]->setResistance(tau / neurons[i]->getCapacity());
+					neurons[i]->setPotential(const_e * neurons[i]->getPotential() + Iext * neurons[i]->getResistance() * (1 - const_e) + neurons[i]->getN_J()); //compute new potential
+					neurons[i]->setN_J(0);
+					//std::cout << "Potentiel Neurone " << i+1 << " " << neurons[i]->getPotential() << std::endl;
+
+					
+					if (spike and (i+1) < neurons.size()) {
+						//std::cout << "in the loop" << std::endl;
+						neurons[i+1]->sumInput(J);
+					}
 				
-				double tau(20); //resistance * capacity
-				double const_e( exp(-dt/tau) );
-				neuron.setResistance(tau / neuron.getCapacity());
-				neuron.setPotential(const_e * neuron.getPotential() + Iext * neuron.getResistance() * (1 - const_e)); //compute new potential
+				}
+			
+				//std::cout << "New neuron potential : " << neurons[i]->getPotential() << std::endl;
+			
+				output << "Time: " << simtime << " ms" << std::endl;
+				output << "Membrane potential: " << neurons[i]->getPotential() << std::endl;	
 			}
-			
-			std::cout << "New neuron potential : " << neuron.getPotential() << std::endl;
-			
-			output << "Time: " << simtime << " ms" << std::endl;
-			output << "Membrane potential: " << neuron.getPotential() << std::endl;	
 			
 			simtime+= dt;
 		}
 		
-		std::cout << "Time when the spikes occured: " << std::endl;
-		for (auto element : neuron.getTime_spikes()) {
-			std::cout << element << std::endl;
+		for (int i(0); i < neurons.size(); ++i) {
+			std::cout << "Time when the spikes occured for neuron: " << i+1 << std::endl;
+			for (auto element : neurons[i]->getTime_spikes()) {
+				std::cout << element << std::endl;
+			}	
 		}
 	}
 	

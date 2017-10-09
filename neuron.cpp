@@ -35,6 +35,10 @@ double Neuron::getResistance() {
 	return resistance_;
 }
 
+double Neuron::getN_J() {
+	return n_J_;
+}
+
 //setters
 void Neuron::setPotential(double potential) {
 	potential_ = potential;
@@ -48,16 +52,24 @@ void Neuron::setResistance(double resistance) {
 	resistance_ = resistance;
 }
 
+void Neuron::setClock(double time) {
+	clock_ = time;
+}
+
+void Neuron::setN_J(double x) {
+	n_J_ = x;
+}
+
 //other functions	
-bool Neuron::isRefractory() { //ttesting refractory state (if refractory time has passed)
+bool Neuron::isRefractory() { //testing refractory state (if refractory time has passed)
 	return (refractory_time_ > 0.0000); 
 }
 
-void Neuron::update(double time, double ext_input) { //update neuron state
+bool Neuron::update(double time, double ext_input) { //update neuron state
 	
-	if (potential_ > threshold_) {
+	if (potential_ >= threshold_) {
 		
-		std::cout << "Potential > threshold" << std::endl;
+		//std::cout << "Potential > threshold" << std::endl;
 
 		refractory_time_ = 2; //potential has reached threshold so neuron is refractory
 			
@@ -65,10 +77,17 @@ void Neuron::update(double time, double ext_input) { //update neuron state
 			
 		++nb_spikes_; //count up new spike
 			
-		std::cout << "New spike ! We now have " << nb_spikes_ << " spikes." << std::endl;
+		//std::cout << "New spike ! We now have " << nb_spikes_ << " spikes." << std::endl;
+		
+		return true;
 			
 	} else {
-			std::cout << "Potential < threshold" << std::endl;
+			//std::cout << "Potential < threshold" << std::endl;
+			return false;
 	}
 }
+
+void Neuron::sumInput(double J) {
+	n_J_ += J;
+}	
 		

@@ -17,6 +17,10 @@ class Neuron
 	
 	std::vector<double> time_spikes_;
 	
+	double clock_;
+	
+	double n_J_ = 0; //J from other neurons
+	
 	public:
 	
 	Neuron(); //constructor
@@ -39,6 +43,8 @@ class Neuron
 	
 	double getResistance();
 	
+	double getN_J();
+	
 	//setters
 	void setPotential(double potential);
 	
@@ -46,10 +52,16 @@ class Neuron
 	
 	void setResistance(double resistance);
 	
+	void setClock(double time);
+	
+	void setN_J(double x);
+	
 	//other functions
-	void update(double dt, double ext_input);
+	bool update(double dt, double ext_input);
 	
 	bool isRefractory();
+	
+	void sumInput(double J);
 };
 
 #endif
