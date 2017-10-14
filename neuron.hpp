@@ -9,17 +9,21 @@ class Neuron
 	
 	double potential_; 
 	unsigned int nb_spikes_;
-	double resistance_;
-	double capacity_;
+	const double resistance_ = 20.0;
+	const double capacity_ = 1.0;
+	const double tau_ = 20.0;
+	const double threshold_ = 20.0;
+	double refractory_time_ = 2;
+	long refractory_steps_ = 0.0; //steps per refractory period
 	
-	double threshold_;
-	double refractory_time_;
+	std::vector<double> time_spikes_; //stores the time when a spike occures
 	
-	std::vector<double> time_spikes_;
+	double clock_ = 0.0;
 	
-	double clock_;
+	double n_J_ = 0.0; //J from other neurons
 	
-	double n_J_ = 0; //J from other neurons
+	
+	double c1_; //integration constant
 	
 	public:
 	
@@ -30,38 +34,21 @@ class Neuron
 	Neuron(const Neuron& another); //copy constructor
 	
 	//getters
-
-	double getPotential();
+	double getPotential() const;
 	
-	unsigned int getNb_spikes();
+	unsigned int getNbSpikes() const;
 	
-	std::vector<double> getTime_spikes();
-	
-	double getRefractory_time();
-	
-	double getCapacity();
-	
-	double getResistance();
-	
-	double getN_J();
+	std::vector<double> getTimeSpikes() const;
 	
 	//setters
-	void setPotential(double potential);
-	
-	void setRefractory_time(double time);
-	
-	void setResistance(double resistance);
-	
 	void setClock(double time);
 	
-	void setN_J(double x);
-	
 	//other functions
-	bool update(double dt, double ext_input);
-	
-	bool isRefractory();
+	bool update(double ext_input, std::ofstream & output, double h);
 	
 	void sumInput(double J);
+	
+	void saveToFile();
 };
 
 #endif
