@@ -19,9 +19,9 @@ class Neuron
 	std::vector<double> time_spikes_; //stores the time when a spike occures
 	
 	double clock_ = 0.0;
+	double delay_ = 2;
 	
-	double n_J_ = 0.0; //J from other neurons
-	
+	std::vector<double> ring_buffer_;
 	
 	double c1_; //integration constant
 	
@@ -40,13 +40,17 @@ class Neuron
 	
 	std::vector<double> getTimeSpikes() const;
 	
+	double getDelay() const;
+	
+	std::vector<double> getBuffer() const;
+	
 	//setters
 	void setClock(double time);
 	
-	//other functions
-	bool update(double ext_input, std::ofstream & output, double h);
+	void setBuffer(size_t i, double J);
 	
-	void sumInput(double J);
+	//other functions
+	bool update(double ext_input, std::ofstream & output, double h, long step);
 	
 	void saveToFile();
 };

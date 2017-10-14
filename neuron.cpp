@@ -24,13 +24,26 @@ std::vector<double> Neuron::getTimeSpikes()  const {
 	return time_spikes_;
 }
 
+double Neuron::getDelay() const {
+	return delay_;
+}
+
+std::vector<double> Neuron::getBuffer() const {
+	return ring_buffer_;
+}
+	
+
 //setters
 void Neuron::setClock(double time) {
 	clock_ = time;
 }
 
+void Neuron::setBuffer(size_t i,double J) {
+	ring_buffer_[i] = J;
+}
+
 //other functions	
-bool Neuron::update(double ext_input, std::ofstream & output, double h) { //update neuron state
+bool Neuron::update(double ext_input, std::ofstream & output, double h, long step) { //update neuron state
 	
 	bool spike = false;
 		
@@ -56,8 +69,8 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h) { //upda
 		potential_ = 0.0;
 	} else {
 		c1_ = exp(-h/tau_);
-		potential_ = c1_ * potential_ + ext_input * resistance_ * (1- c1_) + n_J_;
-		n_J_ = 0.0;
+		potential_ = c1_ * potential_ + ext_input * resistance_ * (1- c1_) + ring_buffer_[step % ring_buffer_.size() +1];
+		ring_buffer_[step % ring_buffer_.size() + 1] = 0.0;
 			
 	}
 	
@@ -65,9 +78,5 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h) { //upda
 	clock_ += h; //update the neuron clock
 	
 	return spike;
-}
-
-void Neuron::sumInput(double J) {
-	n_J_ += J;
 }
 		

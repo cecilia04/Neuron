@@ -21,9 +21,9 @@ class Cortex
 	
 	Cortex(Cortex const& another); //copy constructor
 	
-	void initNeurons(double time); //initialization of the neurons in the cortex
+	void initNeurons(double time, double h); //initialization of the neurons in the cortex
 	
-	void updateNeurons(double ext_input, std::ofstream & output, double h); //update all the neurons in the cortex
+	void updateNeurons(double ext_input, std::ofstream & output, double h, long step); //update all the neurons in the cortex
 	
 	void printTimeSpikes();
 	

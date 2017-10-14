@@ -39,20 +39,20 @@ int main()
 	} else {
 		
 		Cortex cortex;
-		cortex.initNeurons(0);
+		cortex.initNeurons(0, h); 
 		
 		while (step < steps_to_a) {
-			cortex.updateNeurons(I, output, h); //when between t_start and a
+			cortex.updateNeurons(I, output, h, step); //when between t_start and a
 			++step;
 		}
 		
 		while (step < steps_to_b) {
-			cortex.updateNeurons(ext_input, output, h); //when between a and b
+			cortex.updateNeurons(ext_input, output, h, step); //when between a and b
 			++step;
 		}
 		
 		while (step < steps_to_stop) {
-			cortex.updateNeurons(I, output, h); //when between b and t_stop
+			cortex.updateNeurons(I, output, h, step); //when between b and t_stop
 			++step;
 		}
 		
