@@ -12,7 +12,7 @@ void Cortex::initNeurons(double time, double h) {
 	for (unsigned int i(0); i < nb_neurons_; ++i) {
 		neurons_.push_back(new Neuron);
 		neurons_[i]->setClock(time);
-		neurons_[i]->getBuffer().resize(neurons_[i]->getDelay() / h);
+		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h);
 	}
 }
 

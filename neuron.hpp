@@ -53,6 +53,8 @@ class Neuron
 	bool update(double ext_input, std::ofstream & output, double h, long step);
 	
 	void saveToFile();
+	
+	void resizeBuffer(int i);
 };
 
 #endif

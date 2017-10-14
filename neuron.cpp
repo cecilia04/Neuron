@@ -79,4 +79,8 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h, long ste
 	
 	return spike;
 }
+
+void Neuron::resizeBuffer(int i) {
+	ring_buffer_.resize(i);
+}
 		
