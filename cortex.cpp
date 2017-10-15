@@ -1,4 +1,4 @@
-#include "Cortex.hpp"
+#include "cortex.hpp"
 
 Cortex::Cortex() {}; //constructor
 	

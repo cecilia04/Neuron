@@ -2,7 +2,7 @@
 #define CORTEX_HPP
 #include <iostream>
 #include <vector>
-#include "Neuron.hpp"
+#include "neuron.hpp"
 #include <fstream>
 
 class Cortex
