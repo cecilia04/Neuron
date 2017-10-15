@@ -25,14 +25,14 @@ void Cortex::updateNeurons(double ext_input, std::ofstream & output, double h, l
 			
 			if (spike and (i+1) < neurons_.size()) { //if the neuron i had a spike
 				size_t s = neurons_[i+1]->getBuffer().size(); //calculate the size of the buffer
-				neurons_[i+1]->setBuffer(step % s, J); 		//the neuron i+1 stores J in his buffer
+				neurons_[i+1]->setBuffer((step + s-1) % s, J); 		//the neuron i+1 stores J in his buffer
 			}
 		}
 }	
 	
 void Cortex::printTimeSpikes() {
 	for (size_t i(0); i < neurons_.size(); ++i) {
-		std::cout << "Times when the spikes occured for neuron " << i+1 << " : " << std::endl;
+		std::cout << " Times when the spikes occured for neuron " << i+1 << " : " << std::endl;
 		for (auto time : neurons_[i]->getTimeSpikes()) {
 			std::cout << time << std::endl;
 		}

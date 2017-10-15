@@ -69,12 +69,12 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h, long ste
 		potential_ = 0.0;
 	} else {
 		c1_ = exp(-h/tau_);
-		potential_ = c1_ * potential_ + ext_input * resistance_ * (1- c1_) + ring_buffer_[step % ring_buffer_.size() +1];
-		ring_buffer_[step % ring_buffer_.size() + 1] = 0.0;
+		potential_ = c1_ * potential_ + ext_input * resistance_ * (1- c1_) + ring_buffer_[step % (ring_buffer_.size()+1)];
+		ring_buffer_[step % ring_buffer_.size()] = 0.0;
 			
 	}
 	
-	output << "Time :" << clock_ << "ms; Membrane potential : " << potential_ << " mV" << std::endl;
+	output << "Time : " << clock_ << " ms; Membrane potential : " << potential_ << " mV" << std::endl;
 	clock_ += h; //update the neuron clock
 	
 	return spike;
