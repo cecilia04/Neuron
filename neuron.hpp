@@ -7,6 +7,10 @@ class Neuron
 {
 	private:
 	
+		#ifdef TEST
+	FRIEND_TEST (Neuron_Test, compute_potential);
+		#endif
+	
 	double potential_; 
 	unsigned int nb_spikes_;
 	const double resistance_ = 20.0;

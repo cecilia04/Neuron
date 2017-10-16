@@ -78,7 +78,6 @@ bool Neuron::update(std::ofstream & output, double h, long step) { //update neur
 		assert(R < ring_buffer_.size());
 		potential_ = c1_ * potential_ + Iext_ * resistance_ * (1- c1_) + ring_buffer_[R];
 		ring_buffer_[R] = 0.0;
-			
 	}
 	
 	output << "Time : " << clock_ << " ms; Membrane potential : " << potential_ << " mV" << std::endl;
