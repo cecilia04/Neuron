@@ -23,9 +23,11 @@ class Cortex
 	
 	void initNeurons(double time, double h); //initialization of the neurons in the cortex
 	
-	void updateNeurons(double ext_input, std::ofstream & output, double h, long step); //update all the neurons in the cortex
+	void updateNeurons(std::ofstream & output, double h, long step); //update all the neurons in the cortex
 	
 	void printTimeSpikes();
+	
+	void setNeuronInput(size_t i, double input);
 	
 };
 

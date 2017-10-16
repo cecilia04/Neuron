@@ -29,7 +29,7 @@ int main()
 	long steps_to_b = (b - t_start)/h;
 	long steps_to_stop = (t_stop - t_start)/h;
 	
-	long step(0.0); //step we are in 
+	long step(0); //step we are in 
 	
 	std::ofstream output;
 	output.open("Neuron.txt");
@@ -42,18 +42,24 @@ int main()
 		cortex.initNeurons(0, h); 
 		
 		while (step < steps_to_a) {
-			cortex.updateNeurons(I, output, h, step); //when between t_start and a
+			cortex.setNeuronInput(0, I);
+			cortex.setNeuronInput(1, I);
+			cortex.updateNeurons(output, h, step); //when between t_start and a
 			++step;
 		}
 		
 		while (step < steps_to_b) {
-			cortex.updateNeurons(ext_input, output, h, step); //when between a and b
+			cortex.setNeuronInput(0, ext_input);
+			cortex.setNeuronInput(1, I);
+			cortex.updateNeurons(output, h, step); //when between a and b
 			++step;
 		}
 		
 		while (step < steps_to_stop) {
-			cortex.updateNeurons(I, output, h, step); //when between b and t_stop
-			++step;
+			cortex.setNeuronInput(0, I);
+			cortex.setNeuronInput(1, I);
+			cortex.updateNeurons(output, h, step); //when between b and t_stop
+			++step;		
 		}
 		
 		cortex.printTimeSpikes();

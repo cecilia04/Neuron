@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <cassert>
 
 Neuron::Neuron() //constructor
 	: potential_(0), nb_spikes_(0) {};
@@ -39,11 +40,15 @@ void Neuron::setClock(double time) {
 }
 
 void Neuron::setBuffer(size_t i,double J) {
-	ring_buffer_[i] = J;
+	ring_buffer_[i] += J;
+}
+
+void Neuron::setInput(double I) {
+	Iext_ = I;
 }
 
 //other functions	
-bool Neuron::update(double ext_input, std::ofstream & output, double h, long step) { //update neuron state
+bool Neuron::update(std::ofstream & output, double h, long step) { //update neuron state
 	
 	bool spike = false;
 		
@@ -69,8 +74,10 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h, long ste
 		potential_ = 0.0;
 	} else {
 		c1_ = exp(-h/tau_);
-		potential_ = c1_ * potential_ + ext_input * resistance_ * (1- c1_) + ring_buffer_[step % (ring_buffer_.size())];
-		ring_buffer_[step % ring_buffer_.size()] = 0.0;
+		const auto R = step % (ring_buffer_.size()); //where we Read in our buffer
+		assert(R < ring_buffer_.size());
+		potential_ = c1_ * potential_ + Iext_ * resistance_ * (1- c1_) + ring_buffer_[R];
+		ring_buffer_[R] = 0.0;
 			
 	}
 	
@@ -83,4 +90,3 @@ bool Neuron::update(double ext_input, std::ofstream & output, double h, long ste
 void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
 }
-		
