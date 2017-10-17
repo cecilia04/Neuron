@@ -9,6 +9,10 @@ class Cortex
 {
 	private:
 	
+		#ifdef TEST
+	FRIEND_TEST (Neuron_Test, SpikeTimes); 
+		#endif
+	
 	const unsigned int nb_neurons_ = 2;
 	std::vector<Neuron*> neurons_;
 	const double J = 0.1;

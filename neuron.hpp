@@ -8,7 +8,8 @@ class Neuron
 	private:
 	
 		#ifdef TEST
-	FRIEND_TEST (Neuron_Test, compute_potential);
+	FRIEND_TEST (Neuron_Test, MembranePotential);
+	FRIEND_TEST (Neuron_Test, SpikeTimes); 
 		#endif
 	
 	double potential_; 
