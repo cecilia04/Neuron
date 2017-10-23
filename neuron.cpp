@@ -39,12 +39,16 @@ void Neuron::setClock(double time) {
 	clock_ = time;
 }
 
-void Neuron::setBuffer(size_t i,double J) {
-	ring_buffer_[i] += J;
+void Neuron::setBuffer(size_t i, int n) {
+	ring_buffer_[i] += n * J_;
 }
 
 void Neuron::setInput(double I) {
 	Iext_ = I;
+}
+
+void Neuron::setJ(double J) {
+	J_ = J;
 }
 
 //other functions	

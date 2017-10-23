@@ -1,5 +1,6 @@
 #include "cortex.hpp"
 #include <cassert>
+#include <random>
 
 Cortex::Cortex() {}; //constructor
 	
@@ -23,22 +24,55 @@ void Cortex::initNeurons(double time, double h) {
 		neurons_[i]->setClock(time);
 		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
 	}
+	
+	for (unsigned int i(0); i < nb_excitatory_; ++i) {
+		neurons_[i]->setJ(0.1);
+	}
+	
+	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
+		neurons_[i]->setJ(0.5);
+	}
+}
+
+void Cortex::initConnexions() {
+	for (unsigned int i(0); i < nb_neurons_;++i) {
+		connexions_.push_back({});   //create an empty vector
+		for (unsigned int j(0); j < nb_neurons_; ++i) {
+			connexions_[i].push_back(0);
+		}
+	}
+	
+	for (unsigned int i(0); i < nb_excitatory_; ++i) {
+		for (unsigned int k(0); k < nb_connexions_exc_; ++k) { 
+			int rand = random_uniform(nb_neurons_);
+			++connexions_[i][rand];
+		}
+	}
+	
+	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
+		for (unsigned int k(0); k < nb_connexions_inhib_; ++k) { 
+			int rand = random_uniform(nb_neurons_);
+			++connexions_[i][rand];
+		}
+	}
 }
 
 //update all the neurons in the cortex
 void Cortex::updateNeurons(std::ofstream & output, double h, long step) {
 	for (size_t i(0); i < neurons_.size(); ++i) {
 			
-			output << "Data for neuron : " << i+1;
-			bool spike(neurons_[i]->update(output, h, step)); //update the neuron i
+		output << "Data for neuron : " << i+1;
+		bool spike(neurons_[i]->update(output, h, step)); //update the neuron i
 			
-			if (spike and (i+1) < neurons_.size()) { //if the neuron i had a spike
-				size_t s = neurons_[i+1]->getBuffer().size(); //calculate the size of the buffer
+		if (spike and (!connexions_.empty())) { //if the neuron i had a spike
+			for (size_t j(0); j < nb_neurons_; ++j) {
+				size_t s = neurons_[j]->getBuffer().size(); //calculate the size of the buffer
 				const auto W = (step + s-1) % s; //where we Write in the buffer
 				assert(W < s);
-				neurons_[i+1]->setBuffer(W, J); //the neuron i+1 stores J in his buffer
+				neurons_[i+1]->setBuffer(W, connexions_[i][j]); //the neuron i+1 stores J in his buffer
 			}
 		}
+	}
 }	
 	
 void Cortex::printTimeSpikes() {
@@ -52,4 +86,13 @@ void Cortex::printTimeSpikes() {
 
 void Cortex::setNeuronInput(size_t i, double input) {
 	neurons_[i]->setInput(input);
-}			
+}
+
+int Cortex::random_uniform(unsigned int n) {
+	std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, n-1);
+    
+    return dis(gen);
+}	
+

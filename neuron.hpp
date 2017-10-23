@@ -22,6 +22,7 @@ class Neuron
 	long refractory_steps_ = 0.0; //steps per refractory period
 	
 	double Iext_ = 0;
+	double J_ = 0.0;
 	
 	
 	std::vector<double> time_spikes_; //stores the time when a spike occures
@@ -55,9 +56,11 @@ class Neuron
 	//setters
 	void setClock(double time);
 	
-	void setBuffer(size_t i, double J);
+	void setBuffer(size_t i, int n);
 	
 	void setInput(double I);
+	
+	void setJ(double J);
 	
 	//other functions
 	bool update(std::ofstream & output, double h, long step);
