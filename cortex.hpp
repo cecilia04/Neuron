@@ -9,9 +9,14 @@ class Cortex
 {
 	private:
 	
+		#ifdef TEST
+	FRIEND_TEST (Cortex_Test, Connections);
+	FRIEND_TEST (Cortex_Test, UniformDistribution);
+		#endif
+		
 	const unsigned int nb_neurons_ = 12500;
 	const unsigned int nb_excitatory_ = 10000;
-	const unsigned int nb_inhibitory_ = 250;
+	const unsigned int nb_inhibitory_ = 2500;
 	const unsigned int nb_connections_exc_ = 1000;
 	const unsigned int nb_connections_inhib_ = 250;
 	std::vector<Neuron*> neurons_;

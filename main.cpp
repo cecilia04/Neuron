@@ -40,6 +40,7 @@ int main()
 		
 		Cortex cortex;
 		cortex.initNeurons(0, h);
+		cortex.initConnections();
 		
 		while (step < steps_to_a) {
 			cortex.setNeuronInput(0, I);

@@ -19,17 +19,17 @@ Cortex::Cortex(Cortex const& another) //copy constructor
 	
 //initialization of the neurons in the cortex
 void Cortex::initNeurons(double time, double h) {
-	for (unsigned int i(0); i < nb_neurons_; ++i) {
+	for (unsigned int i(0); i < nb_excitatory_; ++i) {
 		neurons_.push_back(new Neuron);
 		neurons_[i]->setClock(time);
 		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
-	}
-	
-	for (unsigned int i(0); i < nb_excitatory_; ++i) {
 		neurons_[i]->setJ(0.1);
 	}
 	
 	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
+		neurons_.push_back(new Neuron);
+		neurons_[i]->setClock(time);
+		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
 		neurons_[i]->setJ(0.5);
 	}
 }
@@ -37,17 +37,21 @@ void Cortex::initNeurons(double time, double h) {
 void Cortex::initConnections() {
 	for (unsigned int i(0); i < nb_neurons_;++i) {
 		connections_.push_back({});   //create an empty vector
-		for (unsigned int j(0); j < nb_neurons_; ++i) {
+		for (unsigned int j(0); j < nb_neurons_; ++j) {
 			connections_[i].push_back(0);
 		}
 	}
 	
+	std::cout << "connections created" << std::endl;
+	
 	for (unsigned int i(0); i < nb_excitatory_; ++i) {
 		for (unsigned int k(0); k < nb_connections_exc_; ++k) { 
 			int rand = random_uniform(nb_neurons_);
-			++connections_[i][rand];
+			++(connections_[i][rand]);
 		}
 	}
+	
+	std::cout << "connections made for excitatory neurons" << std::endl;
 	
 	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
 		for (unsigned int k(0); k < nb_connections_inhib_; ++k) { 
@@ -55,6 +59,8 @@ void Cortex::initConnections() {
 			++connections_[i][rand];
 		}
 	}
+	
+	std::cout << "connections made for inhibitory neurons" << std::endl;
 }
 
 //update all the neurons in the cortex
