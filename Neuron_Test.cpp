@@ -5,7 +5,7 @@
 #include <fstream>
 #include <cmath>
 
-TEST(Neuron_Test, PositiveInput) { //test if computation of the membrane potential is right with a positive input
+TEST(OneNeuron, PositiveInput) { //test if computation of the membrane potential is right with a positive input
 	Neuron neuron;
 	neuron.setInput(1.0);
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
@@ -36,7 +36,7 @@ TEST(Neuron_Test, PositiveInput) { //test if computation of the membrane potenti
 	output.close();
 }
 
-TEST(Neuron_Test, NegativeInput) { //test if computation of the membrane potential is right with a negative input
+TEST(OneNeuron, NegativeInput) { //test if computation of the membrane potential is right with a negative input
 	Neuron neuron;
 	neuron.setInput(-1.0);
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
@@ -61,7 +61,7 @@ TEST(Neuron_Test, NegativeInput) { //test if computation of the membrane potenti
 }
 
 
-TEST(Neuron_Test, SpikeTimes) {
+TEST(OneNeuron, SpikeTimes) {
 	Neuron neuron;
 	neuron.setInput(1.01); //we know that with an input of 1.01mV, spikes occur at 92.4ms, 186.8ms and 281.2ms
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
@@ -92,14 +92,14 @@ TEST(Neuron_Test, SpikeTimes) {
 		neuron.update(output, 0.1, i);
 	}
 	EXPECT_EQ(neuron.getTimeSpikes().size(), 2);
-	neuron.update(output, 0.1, 2313);
+	neuron.update(output, 0.1, 2312);
 	EXPECT_EQ(neuron.getTimeSpikes().size(), 3);
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 	
 	output.close();
 }
 
-TEST(Neuron_Test, Simulation) {
+TEST(OneNeuron, Simulation) {
 	Neuron neuron;
 	neuron.setInput(1.01); //we know that with an input of 1.01mV, spikes occur at 92.4ms, 186.8ms and 281.2ms
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
@@ -114,6 +114,64 @@ TEST(Neuron_Test, Simulation) {
 	EXPECT_EQ(neuron.getTimeSpikes()[0] - 92.4, 0);
 	EXPECT_EQ(neuron.getTimeSpikes()[1] - 186.8, 0);
 	EXPECT_EQ(neuron.getTimeSpikes()[2] - 281.2,0);
+	
+	output.close();
+}
+
+TEST(TwoNeurons, N1Spike) {
+	Neuron neuron1, neuron2;
+	neuron1.setInput(1.01);
+	neuron1.resizeBuffer(neuron1.delay_/0.1 + 1);
+	neuron2.resizeBuffer(neuron2.delay_/0.1 + 1);
+	neuron1.setJ(0.1); //we consider that both neurons are excitatory for the test
+	neuron2.setJ(0.1);
+	
+	std::ofstream output;
+	output.open("Test1.txt"); //the fonction update needs a file but we don't care about that now
+	
+	//See the impact on neuron 2 when neuron 1 spikes
+	for (long i(0); i < 940; ++i) { //number of steps for neuron 1 to spike (924 steps) + delay (15 steps)
+		if (neuron1.update(output, 0.1, i)) { //update neuron 1
+			size_t s = neuron2.getBuffer().size();
+			neuron2.setBuffer((i + s-1) % s, 1); //neuron 2 stores J in his buffer
+			EXPECT_EQ(neuron1.getPotential(), 0.0);
+		}
+		neuron2.update(output, 0.1, i);
+	}
+	
+	EXPECT_EQ(neuron2.getPotential(), 0.1);
+	
+	output.close();
+}
+
+TEST(TwoNeurons, N2Spike) {
+	Neuron neuron1, neuron2;
+	neuron1.setInput(1.01);
+	neuron2.setInput(1.00);
+	neuron1.resizeBuffer(neuron1.delay_/0.1 + 1);
+	neuron2.resizeBuffer(neuron2.delay_/0.1 + 1);
+	neuron1.setJ(0.1); //we consider that both neurons are excitatory for the test
+	neuron2.setJ(0.1);
+	
+	std::ofstream output;
+	output.open("Test1.txt"); //the fonction update needs a file but we don't care about that now
+	
+	//Neuron 2 1st spike should occur right after neuron 1 2nd spike
+	for (long i(0); i < 1884; ++i) { //number of steps for neuron 1 to spike twice (1868 steps) + delay (15 steps)
+		if (neuron1.update(output, 0.1, i)) { //update neuron 1
+			size_t s = neuron2.getBuffer().size();
+			neuron2.setBuffer((i + s-1) % s, 1); //neuron 2 stores J in his buffer
+			EXPECT_EQ(neuron1.getPotential(), 0.0);
+		}
+		neuron2.update(output, 0.1, i);
+	}
+	
+	//neuron 2 has no spike yet
+	EXPECT_EQ(neuron2.getTimeSpikes().size(), 0);
+	neuron2.update(output, 0.1, 1884);
+	//neuron 2 spike
+	EXPECT_EQ(neuron2.getPotential(), 0.0);
+	EXPECT_EQ(neuron2.getTimeSpikes().size(), 1);
 	
 	output.close();
 }

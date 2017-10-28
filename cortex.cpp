@@ -69,7 +69,7 @@ void Cortex::updateNeurons(std::ofstream & output, double h, long step) {
 				size_t s = neurons_[j]->getBuffer().size(); //calculate the size of the buffer
 				const auto W = (step + s-1) % s; //where we Write in the buffer
 				assert(W < s);
-				neurons_[i+1]->setBuffer(W, connections_[i][j]); //the neuron i+1 stores J in his buffer
+				neurons_[j]->setBuffer(W, connections_[i][j]); //the neuron j stores n*J in his buffer if it is connected n times to neuron i
 			}
 		}
 	}

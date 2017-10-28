@@ -9,10 +9,6 @@ class Cortex
 {
 	private:
 	
-		#ifdef TEST
-	FRIEND_TEST (Neuron_Test, SpikeTimes); 
-		#endif
-	
 	const unsigned int nb_neurons_ = 12500;
 	const unsigned int nb_excitatory_ = 10000;
 	const unsigned int nb_inhibitory_ = 250;
