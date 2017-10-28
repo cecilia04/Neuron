@@ -8,7 +8,7 @@
 int main()
 {
 	double t_start(0.0);
-	double t_stop(500);
+	double t_stop(10);
 	const double h = 0.1; //integration step size
 	double I = 0; //input when not choosen by the user
 	
@@ -39,7 +39,7 @@ int main()
 	} else {
 		
 		Cortex cortex;
-		cortex.initNeurons(0, h); 
+		cortex.initNeurons(0, h);
 		
 		while (step < steps_to_a) {
 			cortex.setNeuronInput(0, I);

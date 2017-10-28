@@ -34,25 +34,25 @@ void Cortex::initNeurons(double time, double h) {
 	}
 }
 
-void Cortex::initConnexions() {
+void Cortex::initConnections() {
 	for (unsigned int i(0); i < nb_neurons_;++i) {
-		connexions_.push_back({});   //create an empty vector
+		connections_.push_back({});   //create an empty vector
 		for (unsigned int j(0); j < nb_neurons_; ++i) {
-			connexions_[i].push_back(0);
+			connections_[i].push_back(0);
 		}
 	}
 	
 	for (unsigned int i(0); i < nb_excitatory_; ++i) {
-		for (unsigned int k(0); k < nb_connexions_exc_; ++k) { 
+		for (unsigned int k(0); k < nb_connections_exc_; ++k) { 
 			int rand = random_uniform(nb_neurons_);
-			++connexions_[i][rand];
+			++connections_[i][rand];
 		}
 	}
 	
 	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
-		for (unsigned int k(0); k < nb_connexions_inhib_; ++k) { 
+		for (unsigned int k(0); k < nb_connections_inhib_; ++k) { 
 			int rand = random_uniform(nb_neurons_);
-			++connexions_[i][rand];
+			++connections_[i][rand];
 		}
 	}
 }
@@ -64,12 +64,12 @@ void Cortex::updateNeurons(std::ofstream & output, double h, long step) {
 		output << "Data for neuron : " << i+1;
 		bool spike(neurons_[i]->update(output, h, step)); //update the neuron i
 			
-		if (spike and (!connexions_.empty())) { //if the neuron i had a spike
+		if (spike and (!connections_.empty())) { //if the neuron i had a spike
 			for (size_t j(0); j < nb_neurons_; ++j) {
 				size_t s = neurons_[j]->getBuffer().size(); //calculate the size of the buffer
 				const auto W = (step + s-1) % s; //where we Write in the buffer
 				assert(W < s);
-				neurons_[i+1]->setBuffer(W, connexions_[i][j]); //the neuron i+1 stores J in his buffer
+				neurons_[i+1]->setBuffer(W, connections_[i][j]); //the neuron i+1 stores J in his buffer
 			}
 		}
 	}
@@ -95,4 +95,5 @@ int Cortex::random_uniform(unsigned int n) {
     
     return dis(gen);
 }	
-
+	
+	

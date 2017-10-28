@@ -7,11 +7,6 @@ class Neuron
 {
 	private:
 	
-		#ifdef TEST
-	FRIEND_TEST (Neuron_Test, MembranePotential);
-	FRIEND_TEST (Neuron_Test, SpikeTimes); 
-		#endif
-	
 	double potential_; 
 	unsigned int nb_spikes_;
 	const double resistance_ = 20.0;
@@ -68,6 +63,8 @@ class Neuron
 	void saveToFile();
 	
 	void resizeBuffer(int i);
+	
+	int random_poisson(); //return a random input from the outside with a poisson distribution
 };
 
 #endif

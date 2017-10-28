@@ -3,6 +3,7 @@
 #include <cmath>
 #include <fstream>
 #include <cassert>
+#include <random>
 
 Neuron::Neuron() //constructor
 	: potential_(0), nb_spikes_(0) {};
@@ -85,11 +86,19 @@ bool Neuron::update(std::ofstream & output, double h, long step) { //update neur
 	}
 	
 	output << "Time : " << clock_ << " ms; Membrane potential : " << potential_ << " mV" << std::endl;
-	clock_ += h; //update the neuron clock
+	clock_ = (step+1)*h; //update the neuron clock
 	
 	return spike;
 }
 
 void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
+}
+
+int Neuron::random_poisson() {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::poisson_distribution<> dis(0.2); //here we use 0.2 mV/step with 0.02 mV/(connexion*ms)
+	
+	return dis(gen);
 }
