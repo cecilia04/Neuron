@@ -21,27 +21,27 @@ class Cortex
 	const unsigned int nb_connections_inhib_ = 250;
 	std::vector<Neuron*> neurons_;
 	
-	std::vector<std::vector<int>> connections_; //matrix to know how many connections there are between each neurons
+	std::vector<std::vector<int>> connections_; /*! matrix to know how many connections there are between each neurons */
 	
 	public:
 	
-	Cortex(); //constructor
+	Cortex(); /*! constructor */
 	
-	~Cortex(); //destructor
+	~Cortex(); /*! destructor */
 	
-	Cortex(Cortex const& another); //copy constructor
+	Cortex(Cortex const& another); /*! copy constructor */
 	
-	void initNeurons(double time, double h); //initialization of the neurons in the cortex
+	void initNeurons(double time, double h); /*! initialization of the neurons in the cortex */
 	
-	void initConnections(); //initialization of connexions between the neurons
+	void initConnections(); /*! initialization of connexions between the neurons */
 	
-	void updateNeurons(std::ofstream & output, double h, long step); //update all the neurons in the cortex
+	void updateNeurons(std::ofstream & output, double h, long step); /*! updates all the neurons in the cortex */
 	
 	void printTimeSpikes();
 	
 	void setNeuronInput(size_t i, double input);
 	
-	int random_uniform(unsigned int n); //return a random number between 0 and n with a uniform distribution  
+	int random_uniform(unsigned int n); /*! returns a random number between 0 and n-1 with a uniform distribution */
 	
 };
 

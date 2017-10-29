@@ -19,30 +19,30 @@ class Neuron
 	const double tau_ = 20.0;
 	const double threshold_ = 20.0;
 	double refractory_time_ = 2;
-	long refractory_steps_ = 0.0; //steps per refractory period
+	long refractory_steps_ = 0.0; /*! steps per refractory period */
 	
 	double Iext_ = 0;
 	double J_ = 0.0;
 	
 	
-	std::vector<double> time_spikes_; //stores the time when a spike occures
+	std::vector<double> time_spikes_; /*! stores the time when a spike occures */
 	
 	double clock_ = 0.0;
 	double delay_ = 1.5;
 	
 	std::vector<double> ring_buffer_;
 	
-	double c1_; //integration constant
+	double c1_; /*! integration constant */
 	
 	public:
 	
-	Neuron(); //constructor
+	Neuron(); /*! constructor */
 	
-	~Neuron(); //destructor
+	~Neuron(); /*! destructor */
 	
-	Neuron(const Neuron& another); //copy constructor
+	Neuron(const Neuron& another); /*! copy constructor */
 	
-	//getters
+	/** getters */
 	double getPotential() const;
 	
 	unsigned int getNbSpikes() const;
@@ -53,7 +53,7 @@ class Neuron
 	
 	std::vector<double> getBuffer() const;
 	
-	//setters
+	/** setters */
 	void setClock(double time);
 	
 	void setBuffer(size_t i, int n);
@@ -62,14 +62,12 @@ class Neuron
 	
 	void setJ(double J);
 	
-	//other functions
+	/** other functions */
 	bool update(std::ofstream & output, double h, long step);
-	
-	void saveToFile();
 	
 	void resizeBuffer(int i);
 	
-	int random_poisson(); //return a random input from the outside with a poisson distribution
+	int random_poisson();
 };
 
 #endif

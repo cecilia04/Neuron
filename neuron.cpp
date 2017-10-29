@@ -5,15 +5,15 @@
 #include <cassert>
 #include <random>
 
-Neuron::Neuron() //constructor
-	: potential_(0), nb_spikes_(0) {};
+Neuron::Neuron() /*! constructor */
+	: potential_(0), nb_spikes_(0) {}
 	
-Neuron::Neuron(const Neuron& another) //destructor
-	: potential_(another.potential_), nb_spikes_(another.potential_), time_spikes_(another.time_spikes_) {};
+Neuron::Neuron(const Neuron& another) /*! destructor */
+	: potential_(another.potential_), nb_spikes_(another.potential_), time_spikes_(another.time_spikes_) {}
 	
-Neuron::~Neuron() {}; //copy constructor
+Neuron::~Neuron() {} /*! copy constructor */
 
-//getters
+/**getters */
 double Neuron::getPotential() const {
 	return potential_;
 }
@@ -35,7 +35,7 @@ std::vector<double> Neuron::getBuffer() const {
 }
 	
 
-//setters
+/**setters */
 void Neuron::setClock(double time) {
 	clock_ = time;
 }
@@ -52,53 +52,62 @@ void Neuron::setJ(double J) {
 	J_ = J;
 }
 
-//other functions	
-bool Neuron::update(std::ofstream & output, double h, long step) { //update neuron state
+/**other functions */
+
+/** Updates neuron state
+ * @param output the file where we write membrane potential
+ * @param h timestep size
+ * @param step number of the step we are in
+ * @return spike boolean if the neuron spiked or not
+ */
+
+bool Neuron::update(std::ofstream & output, double h, long step) {
 	
 	bool spike = false;
 		
-	--refractory_steps_; //update the neuron refractory period
+	--refractory_steps_; /*! updates the neuron refractory period */
 		 
 	if (potential_ > threshold_) {
-		
-		//std::cout << "Potential > threshold" << std::endl;
 
-		refractory_steps_ = refractory_time_ / h; //potential has reached threshold so neuron is refractory
+		refractory_steps_ = refractory_time_ / h; /*! potential has reached threshold so neuron is refractory */
 			
-		time_spikes_.push_back(clock_); //store spike time
+		time_spikes_.push_back(clock_); /*! stores spike time */
 			
-		++nb_spikes_; //count up new spike
+		++nb_spikes_; /*! counts up new spike */
 			
 		spike = true;
 			
-		//std::cout << "New spike ! We now have " << nb_spikes_ << " spikes." << std::endl;
-			
 	}
 		
-	if (refractory_steps_ > 0) { //if the neuron is refractory
+	if (refractory_steps_ > 0) { /*! if the neuron is refractory */
 		potential_ = 0.0;
 	} else {
 		c1_ = exp(-h/tau_);
-		const auto R = step % (ring_buffer_.size()); //where we Read in our buffer
+		const auto R = step % (ring_buffer_.size()); /*! where we Read in our buffer */
 		assert(R < ring_buffer_.size());
 		potential_ = c1_ * potential_ + Iext_ * resistance_ * (1- c1_) + ring_buffer_[R];
 		ring_buffer_[R] = 0.0;
 	}
 	
 	output << "Time : " << clock_ << " ms; Membrane potential : " << potential_ << " mV" << std::endl;
-	clock_ = (step+1)*h; //update the neuron clock
+	clock_ = (step+1)*h; /*! updates the neuron clock */
 	
 	return spike;
 }
 
+/** Resizes the ring buffer of the neuron
+ * @param i size we want the buffer to have
+ */
 void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
 }
 
+
+/** Generates a random int with Poisson distribution */
 int Neuron::random_poisson() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::poisson_distribution<> dis(0.2); //here we use 0.2 mV/step with 0.02 mV/(connexion*ms)
+	std::poisson_distribution<> dis(0.2); /*! here we use 0.2 mV/step with 0.02 mV/(connexion*ms) */
 	
 	return dis(gen);
 }
