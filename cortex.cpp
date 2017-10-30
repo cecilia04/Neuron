@@ -105,6 +105,14 @@ void Cortex::printTimeSpikes() {
 	}
 }
 
+void Cortex::saveToFile(std::ofstream & file) {
+	for (unsigned int i(0); i < nb_neurons_ ; ++i) {
+		for (size_t j(0); j < neurons_[i]->getTimeSpikes().size(); ++j) {
+			file << neurons_[i]->getTimeSpikes()[j] << "\t" << i << "\n";
+		}
+	}
+}
+
 void Cortex::setNeuronInput(size_t i, double input) {
 	neurons_[i]->setInput(input);
 }

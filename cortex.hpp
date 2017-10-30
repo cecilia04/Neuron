@@ -39,6 +39,8 @@ class Cortex
 	
 	void printTimeSpikes();
 	
+	void saveToFile(std::ofstream & file);
+	
 	void setNeuronInput(size_t i, double input);
 	
 	int random_uniform(unsigned int n); /*! returns a random number between 0 and n-1 with a uniform distribution */

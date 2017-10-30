@@ -8,7 +8,7 @@
 int main()
 {
 	double t_start(0.0);
-	double t_stop(100);
+	double t_stop(10);
 	const double h = 0.1; /*! integration step size */
 	double I = 0; /*! input when not choosen by the user */
 	
@@ -20,13 +20,16 @@ int main()
 		std::cin >> a >> b;
 	} while (a<0 or b<=a or b>500);
 	
+	t_start = a;
+	t_stop = b;
+	
 	/**the user chooses his external input */
 	double ext_input;
 	std::cout << "Enter your input current in mV " << std::endl;
 	std::cin >> ext_input;
 	
-	long steps_to_a = (a - t_start)/h;
-	long steps_to_b = (b - t_start)/h;
+	//long steps_to_a = (a - t_start)/h;
+	//long steps_to_b = (b - t_start)/h;
 	long steps_to_stop = (t_stop - t_start)/h;
 	
 	long step(0); /*! step we are in */
@@ -46,22 +49,23 @@ int main()
 		cortex.initNeurons(0, h);
 		cortex.initConnections();
 		
+		/*
 		while (step < steps_to_a) {
 			cortex.setNeuronInput(0, I);
 			cortex.setNeuronInput(1, I);
-			cortex.updateNeurons(output, h, step); /*! when between t_start and a */
+			cortex.updateNeurons(output, h, step); 
 			++step;
 		}
 		
 		while (step < steps_to_b) {
 			cortex.setNeuronInput(0, ext_input);
 			cortex.setNeuronInput(1, I);
-			cortex.updateNeurons(output, h, step); /*! when between a and b */
+			cortex.updateNeurons(output, h, step); 
 			++step;
-		}
+		}*/
 		
 		while (step < steps_to_stop) {
-			cortex.setNeuronInput(0, I);
+			cortex.setNeuronInput(0, ext_input);
 			cortex.setNeuronInput(1, I);
 			cortex.updateNeurons(output, h, step); /*! when between b and t_stop */
 			++step;		
@@ -69,7 +73,13 @@ int main()
 		
 		/** Displays when spikes occured for each neuron */
 		cortex.printTimeSpikes();
-	
+		
+		std::ofstream file;
+		file.open("Spikes.csv");
+		if (!file.fail()) {
+			cortex.saveToFile(file);
+		} else { std::cout << "Error: file could not be open. " << std::endl;}
+		file.close();
 	}	
 	
 	output.close();
