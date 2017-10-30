@@ -33,7 +33,14 @@ double Neuron::getDelay() const {
 std::vector<double> Neuron::getBuffer() const {
 	return ring_buffer_;
 }
-	
+
+long Neuron::getRefractorySteps() const {
+	return refractory_steps_;
+}	
+
+double Neuron::getClock() const {
+	return clock_;
+}
 
 /**setters */
 void Neuron::setClock(double time) {
@@ -52,6 +59,10 @@ void Neuron::setJ(double J) {
 	J_ = J;
 }
 
+void Neuron::setPotentialPoisson() {
+	potential_ += 0.1 * random_poisson();
+}
+
 /**other functions */
 
 /** Updates neuron state
@@ -61,7 +72,7 @@ void Neuron::setJ(double J) {
  * @return spike boolean if the neuron spiked or not
  */
 
-bool Neuron::update(std::ofstream & output, double h, long step) {
+bool Neuron::update(double h, long step) {
 	
 	bool spike = false;
 		
@@ -89,9 +100,7 @@ bool Neuron::update(std::ofstream & output, double h, long step) {
 		ring_buffer_[R] = 0.0;
 	}
 	
-	output << "Time : " << clock_ << " ms; Membrane potential : " << potential_ << " mV" << std::endl;
 	clock_ = (step+1)*h; /*! updates the neuron clock */
-	
 	return spike;
 }
 
@@ -102,12 +111,11 @@ void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
 }
 
-
 /** Generates a random int with Poisson distribution */
 int Neuron::random_poisson() {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::poisson_distribution<> dis(0.2); /*! here we use 0.2 mV/step with 0.02 mV/(connexion*ms) */
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::poisson_distribution<> dis(2); /*! the rate is nu_ext * h = spikes/h */
 	
 	return dis(gen);
 }

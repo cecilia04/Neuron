@@ -76,7 +76,13 @@ void Cortex::updateNeurons(std::ofstream & output, double h, long step) {
 	for (size_t i(0); i < neurons_.size(); ++i) {
 			
 		output << "Data for neuron : " << i+1;
-		bool spike(neurons_[i]->update(output, h, step)); /*! updates the neuron i */
+		bool spike(neurons_[i]->update(h, step)); /*! updates the neuron i */
+		
+		if (neurons_[i]->getRefractorySteps() <= 0.0) {
+			neurons_[i]->setPotentialPoisson();
+		}
+		
+		output << "Time : " << neurons_[i]->getClock() << " ms; Membrane potential : " << neurons_[i]->getPotential() << " mV" << "\n";	
 			
 		if (spike and (!connections_.empty())) { /*! if the neuron i had a spike */
 			for (size_t j(0); j < nb_neurons_; ++j) {

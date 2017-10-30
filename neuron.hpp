@@ -7,7 +7,7 @@ class Neuron
 {
 	private:
 	
-	#ifdef TEST
+		#ifdef TEST
 	FRIEND_TEST (TwoNeurons,N1Spike);
 	FRIEND_TEST (TwoNeurons, N2Spike); 
 		#endif
@@ -53,6 +53,10 @@ class Neuron
 	
 	std::vector<double> getBuffer() const;
 	
+	long getRefractorySteps() const;
+	
+	double getClock() const;
+	
 	/** setters */
 	void setClock(double time);
 	
@@ -62,12 +66,15 @@ class Neuron
 	
 	void setJ(double J);
 	
+	void setPotentialPoisson();
+	
 	/** other functions */
-	bool update(std::ofstream & output, double h, long step);
+	bool update(double h, long step);
 	
 	void resizeBuffer(int i);
 	
 	int random_poisson();
+	
 };
 
 #endif

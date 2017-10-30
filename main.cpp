@@ -8,7 +8,7 @@
 int main()
 {
 	double t_start(0.0);
-	double t_stop(10);
+	double t_stop(100);
 	const double h = 0.1; /*! integration step size */
 	double I = 0; /*! input when not choosen by the user */
 	
