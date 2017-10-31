@@ -60,20 +60,20 @@ class Neuron
 	/** setters */
 	void setClock(double time);
 	
-	void setBuffer(size_t i, int n);
+	void setBuffer(size_t i);
 	
 	void setInput(double I);
 	
 	void setJ(double J);
 	
-	void setPotentialPoisson();
+	void setPotentialPoisson(double eta);
 	
 	/** other functions */
 	bool update(double h, long step);
 	
 	void resizeBuffer(int i);
 	
-	int random_poisson();
+	int random_poisson(double eta);
 	
 };
 

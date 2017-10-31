@@ -112,7 +112,7 @@ TEST(TwoNeurons, N1Spike) {
 	for (long i(0); i < 940; ++i) { //number of steps for neuron 1 to spike (924 steps) + delay (15 steps)
 		if (neuron1.update(0.1, i)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
-			neuron2.setBuffer((i + s-1) % s, 1); //neuron 2 stores J in his buffer
+			neuron2.setBuffer((i + s-1) % s); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
 		neuron2.update(0.1, i);
@@ -134,7 +134,7 @@ TEST(TwoNeurons, N2Spike) {
 	for (long i(0); i < 1884; ++i) { //number of steps for neuron 1 to spike twice (1868 steps) + delay (15 steps)
 		if (neuron1.update(0.1, i)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
-			neuron2.setBuffer((i + s-1) % s, 1); //neuron 2 stores J in his buffer
+			neuron2.setBuffer((i + s-1) % s); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
 		neuron2.update(0.1, i);
@@ -157,24 +157,15 @@ TEST(Cortex_Test, Connections) {
 	cortex.initConnections();
 	EXPECT_EQ(cortex.connections_.size(), cortex.nb_neurons_); 
 	for (long i(0); i < cortex.nb_neurons_; ++i) {
-		EXPECT_EQ(cortex.connections_[i].size(), cortex.nb_neurons_);
+		EXPECT_EQ(cortex.connections_[i].size(), cortex.nb_connections_exc_ + cortex.nb_connections_inhib_);
 	}
-
-	long nb_connections = 0;
-	for (long i(0); i < cortex.nb_neurons_; ++i) {
-		for (long j(0); j < cortex.nb_neurons_; ++j) {
-			nb_connections += cortex.connections_[i][j];
-		}
-	}
-	
-	EXPECT_EQ(nb_connections, cortex.nb_excitatory_*cortex.nb_connections_exc_ + cortex.nb_inhibitory_*cortex.nb_connections_inhib_);
 }
 
 TEST(Cortex_Test, UniformDistribution) { //test if the random number is always between 0 and nb_neurons - 1
 	Cortex cortex;
 	for (long i(0); i<12500; ++i) {
-		EXPECT_LE(0, cortex.random_uniform(cortex.nb_neurons_));
-		EXPECT_LE(cortex.random_uniform(cortex.nb_neurons_), cortex.nb_neurons_ - 1);
+		EXPECT_LE(0, cortex.random_uniform(0, cortex.nb_neurons_));
+		EXPECT_LE(cortex.random_uniform(0, cortex.nb_neurons_), cortex.nb_neurons_ - 1);
 	}
 }
 

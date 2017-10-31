@@ -6,17 +6,20 @@ Cortex::Cortex() {} /*! constructor */
 	
 /** destructor */
 Cortex::~Cortex() {
-	for (auto& neuron : neurons_) {
-		delete neuron;
-		neuron = nullptr;
-	}
-	
-	neurons_.clear();
+	deleteNeurons();
 } 
 	
 Cortex::Cortex(Cortex const& another) /*! copy constructor */
 	:neurons_(another.neurons_) {}
+
+void Cortex::setG(double g) {
+	g_ = g;
+}
 	
+void Cortex::setEta(double eta) {
+	eta_ = eta;
+}
+
 /** Initialization of the neurons in the cortex
  * @param time to initialize the neuron clock (time at which it is created)
  * @param h time step size
@@ -33,7 +36,7 @@ void Cortex::initNeurons(double time, double h) {
 		neurons_.push_back(new Neuron);
 		neurons_[i]->setClock(time);
 		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
-		neurons_[i]->setJ(0.5);
+		neurons_[i]->setJ(0.1 * g_);
 	}
 }
 
@@ -41,30 +44,13 @@ void Cortex::initNeurons(double time, double h) {
 void Cortex::initConnections() {
 	for (unsigned int i(0); i < nb_neurons_;++i) {
 		connections_.push_back({});   /*! creates an empty vector */
-		for (unsigned int j(0); j < nb_neurons_; ++j) {
-			connections_[i].push_back(0);
+		for (unsigned int j(0); j < nb_connections_exc_; ++j) {
+			connections_[i].push_back(random_uniform(0, nb_excitatory_));
+		}
+		for (unsigned int k(0); k < nb_connections_inhib_; ++k) {
+			connections_[i].push_back(random_uniform(nb_excitatory_, nb_neurons_));
 		}
 	}
-	
-	std::cout << "connections matrix created" << std::endl;
-	
-	for (unsigned int i(0); i < nb_excitatory_; ++i) {
-		for (unsigned int k(0); k < nb_connections_exc_; ++k) { 
-			int rand = random_uniform(nb_neurons_);
-			++(connections_[i][rand]);
-		}
-	}
-	
-	std::cout << "connections made for excitatory neurons" << std::endl;
-	
-	for (unsigned int i(nb_excitatory_); i < nb_neurons_; ++i) {
-		for (unsigned int k(0); k < nb_connections_inhib_; ++k) { 
-			int rand = random_uniform(nb_neurons_);
-			++connections_[i][rand];
-		}
-	}
-	
-	std::cout << "connections made for inhibitory neurons" << std::endl;
 }
 
 /**updates all the neurons in the cortex
@@ -72,26 +58,26 @@ void Cortex::initConnections() {
  * @param h time step size
  * @param step number of the step we are in
  */
-void Cortex::updateNeurons(std::ofstream & output, double h, long step) {
-	for (size_t i(0); i < neurons_.size(); ++i) {
+void Cortex::updateNeurons(double h, long step_start, long step_stop) {
+	while (step_start < step_stop) {
+		for (size_t i(0); i < neurons_.size(); ++i) {
+			bool spike(neurons_[i]->update(h, step_start)); /*! updates the neuron i */
+			 
+			if (neurons_[i]->getRefractorySteps() <= 0.0) {
+			neurons_[i]->setPotentialPoisson(eta_);
+			}
 			
-		output << "Data for neuron : " << i+1;
-		bool spike(neurons_[i]->update(h, step)); /*! updates the neuron i */
-		
-		if (neurons_[i]->getRefractorySteps() <= 0.0) {
-			neurons_[i]->setPotentialPoisson();
-		}
-		
-		output << "Time : " << neurons_[i]->getClock() << " ms; Membrane potential : " << neurons_[i]->getPotential() << " mV" << "\n";	
-			
-		if (spike and (!connections_.empty())) { /*! if the neuron i had a spike */
-			for (size_t j(0); j < nb_neurons_; ++j) {
-				size_t s = neurons_[j]->getBuffer().size(); /*! calculates the size of the buffer */
-				const auto W = (step + s-1) % s; /*! where we Write in the buffer */
-				assert(W < s);
-				neurons_[j]->setBuffer(W, connections_[i][j]); /*! the neuron j stores n*J in his buffer if it is connected n times to neuron i */
+			if (spike and (!connections_.empty())) { /*! if the neuron i had a spike */
+				std::cout << "SPIKE" << std::endl;
+				for (size_t j(0); j < (nb_connections_exc_ + nb_connections_inhib_); ++j) {
+					size_t s = neurons_[connections_[i][j]]->getBuffer().size(); /*! calculates the size of the buffer */
+					const auto W = (step_start + s-1) % s; /*! where we Write in the buffer */
+					assert(W < s);
+					neurons_[connections_[i][j]]->setBuffer(W);
+				}
 			}
 		}
+	++step_start;
 	}
 }	
 
@@ -120,12 +106,19 @@ void Cortex::setNeuronInput(size_t i, double input) {
 /** Generates a random number with a uniform distribution
  * @param n the generated number must be below n-1
  */
-int Cortex::random_uniform(unsigned int n) {
+int Cortex::random_uniform(unsigned int start, unsigned int stop) {
 	std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, n-1);
+    std::uniform_int_distribution<> dis(start, stop-1);
     
     return dis(gen);
 }	
 	
+void Cortex::deleteNeurons() {
+	for (auto& neuron : neurons_) {
+		delete neuron;
+		neuron = nullptr;
+	}
 	
+	neurons_.clear();
+}

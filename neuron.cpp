@@ -47,8 +47,8 @@ void Neuron::setClock(double time) {
 	clock_ = time;
 }
 
-void Neuron::setBuffer(size_t i, int n) {
-	ring_buffer_[i] += n * J_;
+void Neuron::setBuffer(size_t i) {
+	ring_buffer_[i] += J_;
 }
 
 void Neuron::setInput(double I) {
@@ -59,8 +59,8 @@ void Neuron::setJ(double J) {
 	J_ = J;
 }
 
-void Neuron::setPotentialPoisson() {
-	potential_ += 0.1 * random_poisson();
+void Neuron::setPotentialPoisson(double eta) {
+	potential_ += 0.1 * random_poisson(eta);
 }
 
 /**other functions */
@@ -73,7 +73,7 @@ void Neuron::setPotentialPoisson() {
  */
 
 bool Neuron::update(double h, long step) {
-	
+	std::cout << step << std::endl;
 	bool spike = false;
 		
 	--refractory_steps_; /*! updates the neuron refractory period */
@@ -112,10 +112,10 @@ void Neuron::resizeBuffer(int i) {
 }
 
 /** Generates a random int with Poisson distribution */
-int Neuron::random_poisson() {
+int Neuron::random_poisson(double eta) {
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
-	static std::poisson_distribution<> dis(2); /*! the rate is nu_ext * h = spikes/h */
+	static std::poisson_distribution<> dis(eta); /*! the rate is nu_ext * h = spikes/h */
 	
 	return dis(gen);
 }
