@@ -9,6 +9,7 @@ TEST(OneNeuron, PositiveInput) { //test if computation of the membrane potential
 	Neuron neuron;
 	neuron.setInput(1.0);
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
+	neuron.computeConstants(0.1);
 	
 	//test for one update with h=0.1
 	neuron.update(0.1, 1);
@@ -36,6 +37,7 @@ TEST(OneNeuron, NegativeInput) { //test if computation of the membrane potential
 	Neuron neuron;
 	neuron.setInput(-1.0);
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
+	neuron.computeConstants(0.1);
 	
 	//test for one update with h=0.1
 	neuron.update(0.1, 1);
@@ -57,6 +59,7 @@ TEST(OneNeuron, SpikeTimes) {
 	Neuron neuron;
 	neuron.setInput(1.01); //we know that with an input of 1.01mV, spikes occur at 92.4ms, 186.8ms and 281.2ms
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
+	neuron.computeConstants(0.1);
 	
 	//Checking first spike
 	for (long i(0); i < 924; ++i) {
@@ -90,6 +93,7 @@ TEST(OneNeuron, Simulation) {
 	Neuron neuron;
 	neuron.setInput(1.01); //we know that with an input of 1.01mV, spikes occur at 92.4ms, 186.8ms and 281.2ms
 	neuron.resizeBuffer(1); //just put a random size because the buffer is not used here as we have only 1 neuron
+	neuron.computeConstants(0.1);
 	
 	for (long i(0); i < 2815; ++i) {
 		neuron.update(0.1, i);
@@ -104,7 +108,9 @@ TEST(TwoNeurons, N1Spike) {
 	Neuron neuron1, neuron2;
 	neuron1.setInput(1.01);
 	neuron1.resizeBuffer(neuron1.delay_/0.1 + 1);
+	neuron1.computeConstants(0.1);
 	neuron2.resizeBuffer(neuron2.delay_/0.1 + 1);
+	neuron2.computeConstants(0.1);
 	neuron1.setJ(0.1); //we consider that both neurons are excitatory for the test
 	neuron2.setJ(0.1);
 	
@@ -126,7 +132,9 @@ TEST(TwoNeurons, N2Spike) {
 	neuron1.setInput(1.01);
 	neuron2.setInput(1.00);
 	neuron1.resizeBuffer(neuron1.delay_/0.1 + 1);
+	neuron1.computeConstants(0.1);
 	neuron2.resizeBuffer(neuron2.delay_/0.1 + 1);
+	neuron2.computeConstants(0.1);
 	neuron1.setJ(0.1); //we consider that both neurons are excitatory for the test
 	neuron2.setJ(0.1);
 	
@@ -158,14 +166,6 @@ TEST(Cortex_Test, Connections) {
 	EXPECT_EQ(cortex.connections_.size(), cortex.nb_neurons_); 
 	for (long i(0); i < cortex.nb_neurons_; ++i) {
 		EXPECT_EQ(cortex.connections_[i].size(), cortex.nb_connections_exc_ + cortex.nb_connections_inhib_);
-	}
-}
-
-TEST(Cortex_Test, UniformDistribution) { //test if the random number is always between 0 and nb_neurons - 1
-	Cortex cortex;
-	for (long i(0); i<12500; ++i) {
-		EXPECT_LE(0, cortex.random_uniform(0, cortex.nb_neurons_));
-		EXPECT_LE(cortex.random_uniform(0, cortex.nb_neurons_), cortex.nb_neurons_ - 1);
 	}
 }
 

@@ -43,6 +43,8 @@ class Cortex
 	
 	void initConnections(); /*! initialization of connexions between the neurons */
 	
+	void fillConnections(std::vector<int> &connections, unsigned int start, unsigned int stop, unsigned int min, unsigned int max);
+	
 	void updateNeurons(double h, long step_start, long step_stop); /*! updates all the neurons in the cortex */
 	
 	void printTimeSpikes();

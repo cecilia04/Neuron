@@ -24,6 +24,8 @@ class Neuron
 	double Iext_ = 0;
 	double J_ = 0.0;
 	
+	double c1_; /*! integration constants */
+	double c2_;
 	
 	std::vector<double> time_spikes_; /*! stores the time when a spike occures */
 	
@@ -31,8 +33,6 @@ class Neuron
 	double delay_ = 1.5;
 	
 	std::vector<double> ring_buffer_;
-	
-	double c1_; /*! integration constant */
 	
 	public:
 	
@@ -74,6 +74,8 @@ class Neuron
 	void resizeBuffer(int i);
 	
 	int random_poisson(double eta);
+	
+	void computeConstants(double h);
 	
 };
 

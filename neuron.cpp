@@ -73,7 +73,6 @@ void Neuron::setPotentialPoisson(double eta) {
  */
 
 bool Neuron::update(double h, long step) {
-	std::cout << step << std::endl;
 	bool spike = false;
 		
 	--refractory_steps_; /*! updates the neuron refractory period */
@@ -93,10 +92,9 @@ bool Neuron::update(double h, long step) {
 	if (refractory_steps_ > 0) { /*! if the neuron is refractory */
 		potential_ = 0.0;
 	} else {
-		c1_ = exp(-h/tau_);
 		const auto R = step % (ring_buffer_.size()); /*! where we Read in our buffer */
 		assert(R < ring_buffer_.size());
-		potential_ = c1_ * potential_ + Iext_ * resistance_ * (1- c1_) + ring_buffer_[R];
+		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R];
 		ring_buffer_[R] = 0.0;
 	}
 	
@@ -118,4 +116,9 @@ int Neuron::random_poisson(double eta) {
 	static std::poisson_distribution<> dis(eta); /*! the rate is nu_ext * h = spikes/h */
 	
 	return dis(gen);
+}
+
+void Neuron::computeConstants(double h) {
+	c1_ = exp(-h/tau_);
+	c2_ = resistance_ * (1-c1_);
 }

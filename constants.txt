@@ -15,18 +15,18 @@ Connections for inhibitory neurons : 250
 J for excitatory neurons : 0.1
 J for inhibitory neurons : 0.5
 
-Experiment 1:
+Experiment A:
  g = 3
  eta = 2
  
-Experiment 2:
+Experiment B:
  g = 6
  eta = 4
  
-Experiment 3: 
+Experiment C: 
  g = 5
  eta = 2
  
-Experiment 4:
+Experiment D:
  g = 4.5
  eta = 0.9
