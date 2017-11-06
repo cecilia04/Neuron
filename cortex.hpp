@@ -22,8 +22,6 @@ class Cortex
 	
 	std::vector<Neuron*> neurons_;
 	
-	std::vector<std::vector<int>> connections_; /*! matrix to know how many connections there are between each neurons */
-	
 	public:
 	
 	Cortex(); /*! constructor */

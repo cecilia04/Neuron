@@ -94,7 +94,7 @@ class Neuron
 	
 	bool isRefractory();
 	
-	void fillTargets(unsigned int i);//std::vector<unsigned int>, unsigned int size);
+	void fillTargets(unsigned int i);
 	
 };
 

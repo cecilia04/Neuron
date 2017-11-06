@@ -170,7 +170,17 @@ TEST(Cortex_Test, Connections) {
 		connections += cortex.neurons_[i]->getTargets().size();
 	}
 	
-	EXPECT_EQ(connections, cortex.nb_connections_exc_ + cortex.nb_connections_inhib_);
+	EXPECT_EQ(connections, (cortex.nb_connections_exc_ + cortex.nb_connections_inhib_) * cortex.nb_neurons_);
+}
+
+TEST(Random_Test, RandomUniform) {
+	Cortex cortex;
+	int n = 12500;
+	
+	for (int i(0); i < 20000; ++i) {
+		EXPECT_LE(0, cortex.random_uniform(0, n));
+		EXPECT_LT(cortex.random_uniform(0, n), n);
+	}
 }
 
 int main (int argc, char **argv) {

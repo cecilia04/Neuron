@@ -117,9 +117,9 @@ void Cortex::deleteNeurons() {
 }
 
 int Cortex::random_uniform(unsigned int start, unsigned int stop) {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(start, stop-1);
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_int_distribution<> dis(start, stop-1);
 	
 	return dis(gen);
 }

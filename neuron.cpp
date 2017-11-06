@@ -76,7 +76,7 @@ void Neuron::setEta(double eta) {
 }
 
 void Neuron::setPotentialPoisson(double h) {
-	potential_ += random_poisson(nu_ext_ * h);
+	potential_ += 0.1 * random_poisson(nu_ext_ * h);
 }
 
 /**other functions */
