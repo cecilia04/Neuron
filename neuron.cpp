@@ -42,13 +42,21 @@ double Neuron::getClock() const {
 	return clock_;
 }
 
+std::vector<unsigned int> Neuron::getTargets() const {
+	return targets_;
+}
+
+double Neuron::getJ() const{
+	return J_;
+}
+
 /**setters */
 void Neuron::setClock(double time) {
 	clock_ = time;
 }
 
-void Neuron::setBuffer(size_t i) {
-	ring_buffer_[i] += J_;
+void Neuron::setBuffer(size_t i, double J) {
+	ring_buffer_[i] += J;
 }
 
 void Neuron::setInput(double I) {
@@ -59,8 +67,16 @@ void Neuron::setJ(double J) {
 	J_ = J;
 }
 
-void Neuron::setPotentialPoisson(double eta) {
-	potential_ += 0.1 * random_poisson(eta);
+void Neuron::setG(double g) {
+	g_ = g;
+}
+	
+void Neuron::setEta(double eta) {
+	eta_ = eta;
+}
+
+void Neuron::setPotentialPoisson(double h) {
+	potential_ += random_poisson(nu_ext_ * h);
 }
 
 /**other functions */
@@ -75,7 +91,7 @@ void Neuron::setPotentialPoisson(double eta) {
 bool Neuron::update(double h, long step) {
 	bool spike = false;
 		
-	--refractory_steps_; /*! updates the neuron refractory period */
+	if (refractory_steps_ > 0) {--refractory_steps_;} /*! updates the neuron refractory period */
 		 
 	if (potential_ > threshold_) {
 
@@ -88,15 +104,17 @@ bool Neuron::update(double h, long step) {
 		spike = true;
 			
 	}
+	
+	const auto R = step % (ring_buffer_.size()); /*! where we Read in our buffer */
+	assert(R < ring_buffer_.size());
 		
-	if (refractory_steps_ > 0) { /*! if the neuron is refractory */
+	if (isRefractory()) { /*! if the neuron is refractory */
 		potential_ = 0.0;
 	} else {
-		const auto R = step % (ring_buffer_.size()); /*! where we Read in our buffer */
-		assert(R < ring_buffer_.size());
 		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R];
-		ring_buffer_[R] = 0.0;
 	}
+	
+	ring_buffer_[R] = 0.0;
 	
 	clock_ = (step+1)*h; /*! updates the neuron clock */
 	return spike;
@@ -110,10 +128,10 @@ void Neuron::resizeBuffer(int i) {
 }
 
 /** Generates a random int with Poisson distribution */
-int Neuron::random_poisson(double eta) {
+int Neuron::random_poisson(double lambda) {
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
-	static std::poisson_distribution<> dis(eta); /*! the rate is nu_ext * h = spikes/h */
+	static std::poisson_distribution<> dis(lambda); 
 	
 	return dis(gen);
 }
@@ -121,4 +139,13 @@ int Neuron::random_poisson(double eta) {
 void Neuron::computeConstants(double h) {
 	c1_ = exp(-h/tau_);
 	c2_ = resistance_ * (1-c1_);
+	nu_ext_ = eta_ * threshold_ / (0.1 * tau_);
+}
+
+bool Neuron::isRefractory() {
+	return (refractory_steps_ > 0);
+}
+
+void Neuron::fillTargets(unsigned int i) {
+	targets_.push_back(i);
 }

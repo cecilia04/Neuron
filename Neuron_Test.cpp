@@ -118,7 +118,7 @@ TEST(TwoNeurons, N1Spike) {
 	for (long i(0); i < 940; ++i) { //number of steps for neuron 1 to spike (924 steps) + delay (15 steps)
 		if (neuron1.update(0.1, i)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
-			neuron2.setBuffer((i + s-1) % s); //neuron 2 stores J in his buffer
+			neuron2.setBuffer((i + s-1) % s, neuron1.J_); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
 		neuron2.update(0.1, i);
@@ -142,7 +142,7 @@ TEST(TwoNeurons, N2Spike) {
 	for (long i(0); i < 1884; ++i) { //number of steps for neuron 1 to spike twice (1868 steps) + delay (15 steps)
 		if (neuron1.update(0.1, i)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
-			neuron2.setBuffer((i + s-1) % s); //neuron 2 stores J in his buffer
+			neuron2.setBuffer((i + s-1) % s, neuron2.J_); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
 		neuron2.update(0.1, i);
@@ -158,15 +158,19 @@ TEST(TwoNeurons, N2Spike) {
 
 TEST(Cortex_Test, Connections) {
 	Cortex cortex;
-	cortex.initNeurons(0, 0.1);
+	cortex.initNeurons(0, 0.1, 5, 2);
 	
 	EXPECT_EQ(cortex.neurons_.size(), cortex.nb_neurons_);
-
+	
 	cortex.initConnections();
-	EXPECT_EQ(cortex.connections_.size(), cortex.nb_neurons_); 
-	for (long i(0); i < cortex.nb_neurons_; ++i) {
-		EXPECT_EQ(cortex.connections_[i].size(), cortex.nb_connections_exc_ + cortex.nb_connections_inhib_);
+	
+	int connections = 0;
+	
+	for (unsigned int i(0); i < cortex.nb_neurons_; ++i) {
+		connections += cortex.neurons_[i]->getTargets().size();
 	}
+	
+	EXPECT_EQ(connections, cortex.nb_connections_exc_ + cortex.nb_connections_inhib_);
 }
 
 int main (int argc, char **argv) {

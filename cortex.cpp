@@ -3,8 +3,7 @@
 #include <random>
 #include <algorithm>
 
-Cortex::Cortex()
-	:connections_(nb_neurons_) {} /*! constructor */
+Cortex::Cortex() {} /*! constructor */
 	
 /** destructor */
 Cortex::~Cortex() {
@@ -14,23 +13,17 @@ Cortex::~Cortex() {
 Cortex::Cortex(Cortex const& another) /*! copy constructor */
 	:neurons_(another.neurons_) {}
 
-void Cortex::setG(double g) {
-	g_ = g;
-}
-	
-void Cortex::setEta(double eta) {
-	eta_ = eta;
-}
-
 /** Initialization of the neurons in the cortex
  * @param time to initialize the neuron clock (time at which it is created)
  * @param h time step size
  */
-void Cortex::initNeurons(double time, double h) {
+void Cortex::initNeurons(double time, double h, double g, double eta) {
 	for (unsigned int i(0); i < nb_excitatory_; ++i) {
 		neurons_.push_back(new Neuron);
 		neurons_[i]->setClock(time);
 		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
+		neurons_[i]->setG(g);
+		neurons_[i]->setEta(eta);
 		neurons_[i]->setJ(0.1);
 	}
 	
@@ -38,30 +31,24 @@ void Cortex::initNeurons(double time, double h) {
 		neurons_.push_back(new Neuron);
 		neurons_[i]->setClock(time);
 		neurons_[i]->resizeBuffer(neurons_[i]->getDelay() / h + 1);
-		neurons_[i]->setJ(-0.1 * g_);
+		neurons_[i]->setG(g);
+		neurons_[i]->setEta(eta);
+		neurons_[i]->setJ(-0.1 * g);
 	}
 }
 
 /** Initilization of all the connections between neurons */
 void Cortex::initConnections() {
-	size_t size_c = nb_connections_exc_ + nb_connections_inhib_;
 	for (unsigned int i(0); i < nb_neurons_;++i) {
-		connections_[i].resize(size_c);
-		
-		fillConnections(connections_[i], 0, nb_connections_exc_, 0, nb_excitatory_);
-		fillConnections(connections_[i], nb_connections_exc_, size_c, nb_excitatory_, nb_neurons_);
+		for (unsigned int j(0); j < nb_connections_exc_; ++j) {
+			neurons_[random_uniform(0, nb_excitatory_)]->fillTargets(i);
+		}
+		for (unsigned int k(0); k < nb_connections_inhib_; ++k) {
+			neurons_[random_uniform(nb_excitatory_, nb_neurons_)]->fillTargets(i);
+		}
 	}
 }
 
-void Cortex::fillConnections(std::vector<int> &connections, unsigned int start, unsigned int stop, unsigned int min, unsigned int max) {
-	std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(min, max-1);
-    
-    auto gener = std::bind(dis, gen);
-    
-    generate(begin(connections)+start, begin(connections)+stop, gener);
-} 
 
 /**updates all the neurons in the cortex
  * @param output file where we write membrane potential
@@ -76,19 +63,21 @@ void Cortex::updateNeurons(double h, long step_start, long step_stop) {
 	size_t s = neurons_[0]->getBuffer().size(); /*! calculates the size of the buffer, all the neurons have the same size */
 	
 	while (step_start < step_stop) {
-		std::cout << step_start << std::endl;
+		if(step_start%100==0)
+			std::cout << step_start << std::endl;
+		
+		auto W = (step_start + s-1) % s; /*! where we Write in the buffer, same for all neurons */
+		assert(W < s);
+		
 		for (size_t i(0); i < neurons_.size(); ++i) {
 			bool spike(neurons_[i]->update(h, step_start)); /*! updates the neuron i */
-		
-			if (neurons_[i]->getRefractorySteps() <= 0.0) {
-			neurons_[i]->setPotentialPoisson(eta_);
+			if (!neurons_[i]->isRefractory()) {
+				neurons_[i]->setPotentialPoisson(h);
 			}
 			
-			if (spike and (!connections_.empty())) { /*! if the neuron i had a spike */
-				for (size_t j(0); j < (nb_connections_exc_ + nb_connections_inhib_); ++j) {
-					const auto W = (step_start + s-1) % s; /*! where we Write in the buffer */
-					assert(W < s);
-					neurons_[connections_[i][j]]->setBuffer(W);
+			if (spike) { /*! if the neuron i had a spike */
+				for (auto target : neurons_[i]->getTargets()) {
+					neurons_[target]->setBuffer(W, neurons_[i]->getJ());
 				}
 			}
 		}
@@ -125,4 +114,12 @@ void Cortex::deleteNeurons() {
 	}
 	
 	neurons_.clear();
+}
+
+int Cortex::random_uniform(unsigned int start, unsigned int stop) {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(start, stop-1);
+	
+	return dis(gen);
 }

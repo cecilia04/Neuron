@@ -1,10 +1,7 @@
 #include "experiment.hpp"
 #include <iostream>
 
-Experiment::Experiment() {
-	std::cout << "Making connections ..." << std::endl;
-	cortex_.initConnections();
-}
+Experiment::Experiment() {}
 
 Experiment::~Experiment() {}
 
@@ -12,11 +9,11 @@ Experiment::Experiment(Experiment const& another)
 	:cortex_(another.cortex_) {}
 	
 void Experiment::simulation(double g, double eta, double h, double time, std::ofstream & file_graph) {
-	cortex_.setG(g);
-	cortex_.setEta(eta);
-	
 	std::cout << "Initializing neurons ..." << std::endl;
-	cortex_.initNeurons(0, h);
+	cortex_.initNeurons(0, h, g, eta);
+	
+	std::cout << "Making connections ..." << std::endl;
+	cortex_.initConnections();
 	
 	long step_start = 0;
 	long step_stop = time / h;

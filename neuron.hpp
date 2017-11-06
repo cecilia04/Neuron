@@ -21,9 +21,15 @@ class Neuron
 	double refractory_time_ = 2;
 	long refractory_steps_ = 0.0; /*! steps per refractory period */
 	
-	double Iext_ = 0;
-	double J_ = 0.0;
+	double g_ = 5;
+	double eta_ = 2; /*! nu ext / nu thr */
 	
+	
+	double Iext_ = 0;
+	double J_ = 0.1;
+	
+	double nu_ext_;
+
 	double c1_; /*! integration constants */
 	double c2_;
 	
@@ -33,6 +39,7 @@ class Neuron
 	double delay_ = 1.5;
 	
 	std::vector<double> ring_buffer_;
+	std::vector<unsigned int> targets_;
 	
 	public:
 	
@@ -57,25 +64,37 @@ class Neuron
 	
 	double getClock() const;
 	
+	std::vector<unsigned int> getTargets() const;
+
+	double getJ() const;
+	
 	/** setters */
 	void setClock(double time);
 	
-	void setBuffer(size_t i);
+	void setBuffer(size_t i, double J);
 	
 	void setInput(double I);
 	
 	void setJ(double J);
 	
-	void setPotentialPoisson(double eta);
+	void setG(double g);
+	
+	void setEta(double eta);
+	
+	void setPotentialPoisson(double h);
 	
 	/** other functions */
 	bool update(double h, long step);
 	
 	void resizeBuffer(int i);
 	
-	int random_poisson(double eta);
+	int random_poisson(double lambda);
 	
 	void computeConstants(double h);
+	
+	bool isRefractory();
+	
+	void fillTargets(unsigned int i);//std::vector<unsigned int>, unsigned int size);
 	
 };
 

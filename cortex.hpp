@@ -20,9 +20,6 @@ class Cortex
 	const unsigned int nb_connections_exc_ = 1000;
 	const unsigned int nb_connections_inhib_ = 250;
 	
-	double g_ = 5;
-	double eta_ = 2; /*! nu ext / nu thr */
-	
 	std::vector<Neuron*> neurons_;
 	
 	std::vector<std::vector<int>> connections_; /*! matrix to know how many connections there are between each neurons */
@@ -35,15 +32,9 @@ class Cortex
 	
 	Cortex(Cortex const& another); /*! copy constructor */
 	
-	void setG(double g);
-	
-	void setEta(double eta);
-	
-	void initNeurons(double time, double h); /*! initialization of the neurons in the cortex */
+	void initNeurons(double time, double h, double g, double eta); /*! initialization of the neurons in the cortex */
 	
 	void initConnections(); /*! initialization of connexions between the neurons */
-	
-	void fillConnections(std::vector<int> &connections, unsigned int start, unsigned int stop, unsigned int min, unsigned int max);
 	
 	void updateNeurons(double h, long step_start, long step_stop); /*! updates all the neurons in the cortex */
 	
