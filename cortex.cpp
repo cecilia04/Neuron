@@ -35,6 +35,8 @@ void Cortex::initNeurons(double time, double h, double g, double eta) {
 		neurons_[i]->setEta(eta);
 		neurons_[i]->setJ(-0.1 * g);
 	}
+	
+	assert(neurons_.size() == nb_neurons_);
 }
 
 /** Initilization of all the connections between neurons */
@@ -62,6 +64,11 @@ void Cortex::initConnections() {
  * @param step number of the step we are in
  */
 void Cortex::updateNeurons(double h, long step_start, long step_stop) {
+	
+	assert(step_start >= 0);
+	assert(step_stop >= 0);
+	assert(step_start <= step_stop);
+	
 	for (auto n : neurons_) {
 		n->computeConstants(h);
 	}
@@ -72,8 +79,7 @@ void Cortex::updateNeurons(double h, long step_start, long step_stop) {
 	size_t s = neurons_[0]->getBuffer().size(); /*! calculates the size of the buffer, all the neurons have the same size */
 	
 	while (step_start < step_stop) {
-		if(step_start%100==0)
-			std::cout << step_start << std::endl;
+		if(step_start%100==0) {std::cout << step_start << std::endl;}
 		
 		auto W = (step_start + s-1) % s; /*! where we Write in the buffer, same for all neurons */
 		assert(W < s);

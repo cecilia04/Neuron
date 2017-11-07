@@ -15,8 +15,7 @@ class Cortex
 		#endif
 		
 	const unsigned int nb_neurons_ = 12500;
-	const unsigned int nb_excitatory_ = 10000;
-	const unsigned int nb_inhibitory_ = 2500;
+	const unsigned int nb_excitatory_ = 10000;   // => nb_inhibitory_ = 2500;
 	const unsigned int nb_connections_exc_ = 1000;
 	const unsigned int nb_connections_inhib_ = 250;
 	

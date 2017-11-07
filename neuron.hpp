@@ -14,8 +14,7 @@ class Neuron
 	
 	double potential_; 
 	unsigned int nb_spikes_;
-	const double resistance_ = 20.0;
-	const double capacity_ = 1.0;
+	const double resistance_ = 20.0; //because capacity_ = 1.0 and  and resistance = tau / capacity
 	const double tau_ = 20.0;
 	const double threshold_ = 20.0;
 	double refractory_time_ = 2;

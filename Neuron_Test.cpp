@@ -22,7 +22,7 @@ TEST(OneNeuron, PositiveInput) { //test if computation of the membrane potential
 	
 	//potential should tend to 20 but never reach it and the neuron should never spike
 	EXPECT_LT(neuron.getPotential(), 20.0); //EXPECT_LT -> val1 < val2
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 0);
+	EXPECT_EQ(0U, neuron.getTimeSpikes().size());
 	
 	//membrane potential should tend towards 0 with no input current
 	neuron.setInput(0.0);
@@ -50,7 +50,7 @@ TEST(OneNeuron, NegativeInput) { //test if computation of the membrane potential
 	
 	//potential should tend to -20 but never reach it and the neuron should never spike
 	EXPECT_GT(neuron.getPotential(), -20.0); //EXPECT_GT -> val1 > val2
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 0);
+	EXPECT_EQ(0U, neuron.getTimeSpikes().size());
 	
 }
 
@@ -65,27 +65,27 @@ TEST(OneNeuron, SpikeTimes) {
 	for (long i(0); i < 924; ++i) {
 		neuron.update(0.1, i);
 	}
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 0);
+	EXPECT_EQ(0U, neuron.getTimeSpikes().size());
 	neuron.update(0.1, 924);
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 1);
+	EXPECT_EQ(1U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 	
 	//Checking second spike
 	for (long i(925); i < 1868; ++i) {
 		neuron.update(0.1, i);
 	}
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 1);
+	EXPECT_EQ(1U, neuron.getTimeSpikes().size());
 	neuron.update(0.1, 1868);
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 2);
+	EXPECT_EQ(2U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 	
 	//Checking second spike
 	for (long i(1869); i < 2812; ++i) {
 		neuron.update(0.1, i);
 	}
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 2);
+	EXPECT_EQ(2U, neuron.getTimeSpikes().size());
 	neuron.update(0.1, 2312);
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 3);
+	EXPECT_EQ(3U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 }
 
@@ -98,7 +98,7 @@ TEST(OneNeuron, Simulation) {
 	for (long i(0); i < 2815; ++i) {
 		neuron.update(0.1, i);
 	}
-	EXPECT_EQ(neuron.getTimeSpikes().size(), 3);
+	EXPECT_EQ(3U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getTimeSpikes()[0] - 92.4, 0);
 	EXPECT_EQ(neuron.getTimeSpikes()[1] - 186.8, 0);
 	EXPECT_EQ(neuron.getTimeSpikes()[2] - 281.2,0);
@@ -149,11 +149,11 @@ TEST(TwoNeurons, N2Spike) {
 	}
 	
 	//neuron 2 has no spike yet
-	EXPECT_EQ(neuron2.getTimeSpikes().size(), 0);
+	EXPECT_EQ(0U, neuron2.getTimeSpikes().size());
 	neuron2.update(0.1, 1884);
 	//neuron 2 spike
 	EXPECT_EQ(neuron2.getPotential(), 0.0);
-	EXPECT_EQ(neuron2.getTimeSpikes().size(), 1);
+	EXPECT_EQ(1U, neuron2.getTimeSpikes().size());
 }
 
 TEST(Cortex_Test, Connections) {
@@ -164,7 +164,7 @@ TEST(Cortex_Test, Connections) {
 	
 	cortex.initConnections();
 	
-	int connections = 0;
+	unsigned int connections = 0;
 	
 	for (unsigned int i(0); i < cortex.nb_neurons_; ++i) {
 		connections += cortex.neurons_[i]->getTargets().size();

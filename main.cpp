@@ -18,6 +18,8 @@ int main() {
 	
 	output_1.close();
 	
+	std::cout << "Experiment 1 done" << std::endl;
+	
 	std::ofstream output_2;
 	output_2.open("Exp2.csv");
 	
@@ -28,6 +30,8 @@ int main() {
 	}
 	
 	output_2.close();
+	
+	std::cout << "Experiment 2 done" << std::endl;
 	
 	std::ofstream output_3;
 	output_3.open("Exp3.csv");
@@ -40,6 +44,8 @@ int main() {
 	
 	output_3.close();
 	
+	std::cout << "Experiment 3 done" << std::endl;
+
 	std::ofstream output_4;
 	output_4.open("Exp4.csv");
 	
@@ -50,4 +56,6 @@ int main() {
 	}
 	
 	output_4.close();
+	
+	std::cout << "Experiment 4 done" << std::endl;
 }

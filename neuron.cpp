@@ -111,6 +111,7 @@ bool Neuron::update(double h, long step) {
 	if (isRefractory()) { /*! if the neuron is refractory */
 		potential_ = 0.0;
 	} else {
+		assert(spike == 0);
 		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R];
 	}
 	
