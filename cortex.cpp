@@ -39,12 +39,18 @@ void Cortex::initNeurons(double time, double h, double g, double eta) {
 
 /** Initilization of all the connections between neurons */
 void Cortex::initConnections() {
+	
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_int_distribution<> dis_e(0, nb_excitatory_ - 1);
+	static std::uniform_int_distribution<> dis_i(nb_excitatory_, nb_neurons_ - 1);
+	
 	for (unsigned int i(0); i < nb_neurons_;++i) {
 		for (unsigned int j(0); j < nb_connections_exc_; ++j) {
-			neurons_[random_uniform(0, nb_excitatory_)]->fillTargets(i);
+			neurons_[dis_e(gen)]->fillTargets(i);
 		}
 		for (unsigned int k(0); k < nb_connections_inhib_; ++k) {
-			neurons_[random_uniform(nb_excitatory_, nb_neurons_)]->fillTargets(i);
+			neurons_[dis_i(gen)]->fillTargets(i);
 		}
 	}
 }
@@ -59,6 +65,9 @@ void Cortex::updateNeurons(double h, long step_start, long step_stop) {
 	for (auto n : neurons_) {
 		n->computeConstants(h);
 	}
+	
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
 	
 	size_t s = neurons_[0]->getBuffer().size(); /*! calculates the size of the buffer, all the neurons have the same size */
 	
@@ -114,12 +123,4 @@ void Cortex::deleteNeurons() {
 	}
 	
 	neurons_.clear();
-}
-
-int Cortex::random_uniform(unsigned int start, unsigned int stop) {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<> dis(start, stop-1);
-	
-	return dis(gen);
 }

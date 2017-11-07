@@ -1,6 +1,7 @@
 #include "experiment.hpp"
 #include <iostream>
 #include <fstream>
+#include <random>
 
 int main() {
 	const double h = 0.1;

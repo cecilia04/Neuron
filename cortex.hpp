@@ -42,8 +42,6 @@ class Cortex
 	
 	void setNeuronInput(size_t i, double input);
 	
-	int random_uniform(unsigned int start, unsigned int stop); /*! returns a random number between start and stop-1 with a uniform distribution */
-	
 	void deleteNeurons();
 	
 };
