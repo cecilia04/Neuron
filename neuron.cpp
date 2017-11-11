@@ -46,8 +46,12 @@ std::vector<unsigned int> Neuron::getTargets() const {
 	return targets_;
 }
 
-double Neuron::getJ() const{
+double Neuron::getJ() const {
 	return J_;
+}
+
+double Neuron::getNuExt() const {
+	return nu_ext_;
 }
 
 /**setters */
@@ -75,10 +79,6 @@ void Neuron::setEta(double eta) {
 	eta_ = eta;
 }
 
-void Neuron::setPotentialPoisson(double h) {
-	potential_ += 0.1 * random_poisson(nu_ext_ * h);
-}
-
 /**other functions */
 
 /** Updates neuron state
@@ -88,12 +88,12 @@ void Neuron::setPotentialPoisson(double h) {
  * @return spike boolean if the neuron spiked or not
  */
 
-bool Neuron::update(double h, long step) {
+bool Neuron::update(double h, long step, int poisson) {
 	bool spike = false;
 		
 	if (refractory_steps_ > 0) {--refractory_steps_;} /*! updates the neuron refractory period */
 		 
-	if (potential_ > threshold_) {
+	if (potential_ >= threshold_) {
 
 		refractory_steps_ = refractory_time_ / h; /*! potential has reached threshold so neuron is refractory */
 			
@@ -112,7 +112,7 @@ bool Neuron::update(double h, long step) {
 		potential_ = 0.0;
 	} else {
 		assert(spike == 0);
-		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R];
+		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R] + 0.1 * poisson;
 	}
 	
 	ring_buffer_[R] = 0.0;
@@ -126,15 +126,6 @@ bool Neuron::update(double h, long step) {
  */
 void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
-}
-
-/** Generates a random int with Poisson distribution */
-int Neuron::random_poisson(double lambda) {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::poisson_distribution<> dis(lambda); 
-	
-	return dis(gen);
 }
 
 void Neuron::computeConstants(double h) {

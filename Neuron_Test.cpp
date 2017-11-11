@@ -12,12 +12,12 @@ TEST(OneNeuron, PositiveInput) { //test if computation of the membrane potential
 	neuron.computeConstants(0.1);
 	
 	//test for one update with h=0.1
-	neuron.update(0.1, 1);
+	neuron.update(0.1, 1, 0);
 	EXPECT_EQ(20*(1-exp(-0.1/20)) - neuron.getPotential(), 0.0);
 	
 	//test for numerous updates
 	for (long i(0); i < 2000; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	
 	//potential should tend to 20 but never reach it and the neuron should never spike
@@ -27,7 +27,7 @@ TEST(OneNeuron, PositiveInput) { //test if computation of the membrane potential
 	//membrane potential should tend towards 0 with no input current
 	neuron.setInput(0.0);
 	for (long i(0); i < 2000; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	EXPECT_NEAR(neuron.getPotential(), 0, 1e-3);
 	
@@ -40,12 +40,12 @@ TEST(OneNeuron, NegativeInput) { //test if computation of the membrane potential
 	neuron.computeConstants(0.1);
 	
 	//test for one update with h=0.1
-	neuron.update(0.1, 1);
+	neuron.update(0.1, 1, 0);
 	EXPECT_EQ(-20*(1-exp(-0.1/20)) - neuron.getPotential(), 0.0);
 	
 	//test for numerous updates
 	for (long i(0); i < 2000; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	
 	//potential should tend to -20 but never reach it and the neuron should never spike
@@ -63,28 +63,28 @@ TEST(OneNeuron, SpikeTimes) {
 	
 	//Checking first spike
 	for (long i(0); i < 924; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	EXPECT_EQ(0U, neuron.getTimeSpikes().size());
-	neuron.update(0.1, 924);
+	neuron.update(0.1, 924, 0);
 	EXPECT_EQ(1U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 	
 	//Checking second spike
 	for (long i(925); i < 1868; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	EXPECT_EQ(1U, neuron.getTimeSpikes().size());
-	neuron.update(0.1, 1868);
+	neuron.update(0.1, 1868, 0);
 	EXPECT_EQ(2U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 	
 	//Checking second spike
 	for (long i(1869); i < 2812; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	EXPECT_EQ(2U, neuron.getTimeSpikes().size());
-	neuron.update(0.1, 2312);
+	neuron.update(0.1, 2312, 0);
 	EXPECT_EQ(3U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getPotential(), 0.0);
 }
@@ -96,7 +96,7 @@ TEST(OneNeuron, Simulation) {
 	neuron.computeConstants(0.1);
 	
 	for (long i(0); i < 2815; ++i) {
-		neuron.update(0.1, i);
+		neuron.update(0.1, i, 0);
 	}
 	EXPECT_EQ(3U, neuron.getTimeSpikes().size());
 	EXPECT_EQ(neuron.getTimeSpikes()[0] - 92.4, 0);
@@ -116,12 +116,12 @@ TEST(TwoNeurons, N1Spike) {
 	
 	//See the impact on neuron 2 when neuron 1 spikes
 	for (long i(0); i < 940; ++i) { //number of steps for neuron 1 to spike (924 steps) + delay (15 steps)
-		if (neuron1.update(0.1, i)) { //update neuron 1
+		if (neuron1.update(0.1, i, 0)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
 			neuron2.setBuffer((i + s-1) % s, neuron1.J_); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
-		neuron2.update(0.1, i);
+		neuron2.update(0.1, i, 0);
 	}
 	
 	EXPECT_EQ(neuron2.getPotential(), 0.1);
@@ -140,17 +140,17 @@ TEST(TwoNeurons, N2Spike) {
 	
 	//Neuron 2 1st spike should occur right after neuron 1 2nd spike
 	for (long i(0); i < 1884; ++i) { //number of steps for neuron 1 to spike twice (1868 steps) + delay (15 steps)
-		if (neuron1.update(0.1, i)) { //update neuron 1
+		if (neuron1.update(0.1, i, 0)) { //update neuron 1
 			size_t s = neuron2.getBuffer().size();
 			neuron2.setBuffer((i + s-1) % s, neuron2.J_); //neuron 2 stores J in his buffer
 			EXPECT_EQ(neuron1.getPotential(), 0.0);
 		}
-		neuron2.update(0.1, i);
+		neuron2.update(0.1, i, 0);
 	}
 	
 	//neuron 2 has no spike yet
 	EXPECT_EQ(0U, neuron2.getTimeSpikes().size());
-	neuron2.update(0.1, 1884);
+	neuron2.update(0.1, 1884, 0);
 	//neuron 2 spike
 	EXPECT_EQ(neuron2.getPotential(), 0.0);
 	EXPECT_EQ(1U, neuron2.getTimeSpikes().size());

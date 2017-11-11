@@ -67,6 +67,8 @@ class Neuron
 
 	double getJ() const;
 	
+	double getNuExt() const;
+	
 	/** setters */
 	void setClock(double time);
 	
@@ -80,14 +82,10 @@ class Neuron
 	
 	void setEta(double eta);
 	
-	void setPotentialPoisson(double h);
-	
 	/** other functions */
-	bool update(double h, long step);
+	bool update(double h, long step, int poisson);
 	
 	void resizeBuffer(int i);
-	
-	int random_poisson(double lambda);
 	
 	void computeConstants(double h);
 	
