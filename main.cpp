@@ -13,7 +13,7 @@
  * Run the command in the terminal : python graphi.py
  * 
  * Data for the simulation i are available in the fil Expi.csv
- * /
+ */
 
 int main() {
 	const double h = 0.1;  /*! Size of the steps of simulation */
