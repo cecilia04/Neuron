@@ -3,6 +3,18 @@
 #include <fstream>
 #include <random>
 
+/** This program simulates a cortex of 12500 neurons.
+ * 12 000 neurons are excitatory and 2 500 are inhibitory.
+ * Each neurons have 1 000 excitatory and 250 inhibitory connections
+ * 
+ * The program will run 4 simulations with different parameters in order
+ * to draw plots. 
+ * In order to draw the plot for the simulation i:
+ * Run the command in the terminal : python graphi.py
+ * 
+ * Data for the simulation i are available in the fil Expi.csv
+ * /
+
 int main() {
 	const double h = 0.1;  /*! Size of the steps of simulation */
 	Experiment exp;
