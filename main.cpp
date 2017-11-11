@@ -3,7 +3,9 @@
 #include <fstream>
 #include <random>
 
-/** This program simulates a cortex of 12500 neurons.
+/** \mainpage Description of the program
+ * 
+ * This program simulates a cortex of 12500 neurons.
  * 12 000 neurons are excitatory and 2 500 are inhibitory.
  * Each neurons have 1 000 excitatory and 250 inhibitory connections
  * 

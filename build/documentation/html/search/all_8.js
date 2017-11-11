@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['update',['update',['../classNeuron.html#a673bf2af51dc5ddd7e328bc00c235af2',1,'Neuron']]],
-  ['updateneurons',['updateNeurons',['../classCortex.html#a17e7aeb919c1c567c0cc07334487db11',1,'Cortex']]]
+  ['savetofile',['saveToFile',['../classCortex.html#a9f01f06ef18c8632606f3425083850c3',1,'Cortex']]],
+  ['simulation',['simulation',['../classExperiment.html#a3ce3abc3000a2f3c63f0ee587708f211',1,'Experiment']]]
 ];
