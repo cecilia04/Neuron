@@ -1,0 +1,133 @@
+\hypertarget{classNeuron}{}\section{Neuron Class Reference}
+\label{classNeuron}\index{Neuron@{Neuron}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classNeuron_ae9da3a26f28e0e594ccfac1723b69277}\label{classNeuron_ae9da3a26f28e0e594ccfac1723b69277}} 
+{\bfseries Neuron} (const \hyperlink{classNeuron}{Neuron} \&another)
+\item 
+\mbox{\Hypertarget{classNeuron_acf44c8e2b57be445c2d802094a0c4f10}\label{classNeuron_acf44c8e2b57be445c2d802094a0c4f10}} 
+double {\bfseries get\+Potential} () const
+\item 
+\mbox{\Hypertarget{classNeuron_a0fb2734908d23505237f09f23a68964a}\label{classNeuron_a0fb2734908d23505237f09f23a68964a}} 
+unsigned int {\bfseries get\+Nb\+Spikes} () const
+\item 
+\mbox{\Hypertarget{classNeuron_add5a535ca0f35e89c4bb9e4a3bce1443}\label{classNeuron_add5a535ca0f35e89c4bb9e4a3bce1443}} 
+std\+::vector$<$ double $>$ {\bfseries get\+Time\+Spikes} () const
+\item 
+\mbox{\Hypertarget{classNeuron_aa1c3d933b84d2fdc60231c27f2075d82}\label{classNeuron_aa1c3d933b84d2fdc60231c27f2075d82}} 
+double {\bfseries get\+Delay} () const
+\item 
+\mbox{\Hypertarget{classNeuron_ab553b59386a01f1a08d1d35c4373ff6e}\label{classNeuron_ab553b59386a01f1a08d1d35c4373ff6e}} 
+std\+::vector$<$ double $>$ {\bfseries get\+Buffer} () const
+\item 
+\mbox{\Hypertarget{classNeuron_af0cb28aa6059bfcde4458b06a16ccfcb}\label{classNeuron_af0cb28aa6059bfcde4458b06a16ccfcb}} 
+long {\bfseries get\+Refractory\+Steps} () const
+\item 
+\mbox{\Hypertarget{classNeuron_a91b7d616e5b32761b542533e807eb8a6}\label{classNeuron_a91b7d616e5b32761b542533e807eb8a6}} 
+double {\bfseries get\+Clock} () const
+\item 
+\mbox{\Hypertarget{classNeuron_a6bfa8a339bc40708293050a5a81bb679}\label{classNeuron_a6bfa8a339bc40708293050a5a81bb679}} 
+std\+::vector$<$ unsigned int $>$ {\bfseries get\+Targets} () const
+\item 
+\mbox{\Hypertarget{classNeuron_a31f1ab91cacae107aca969c949b491a2}\label{classNeuron_a31f1ab91cacae107aca969c949b491a2}} 
+double {\bfseries getJ} () const
+\item 
+\mbox{\Hypertarget{classNeuron_a6d75ba1872e1cc93632805baf14e73a3}\label{classNeuron_a6d75ba1872e1cc93632805baf14e73a3}} 
+double {\bfseries get\+Nu\+Ext} () const
+\item 
+\mbox{\Hypertarget{classNeuron_af842772ffe709f3832a33077d468f002}\label{classNeuron_af842772ffe709f3832a33077d468f002}} 
+void {\bfseries set\+Clock} (double time)
+\item 
+\mbox{\Hypertarget{classNeuron_a7807d64ac331e6ce7cca02c3d50c1f49}\label{classNeuron_a7807d64ac331e6ce7cca02c3d50c1f49}} 
+void {\bfseries set\+Buffer} (size\+\_\+t i, double J)
+\item 
+\mbox{\Hypertarget{classNeuron_adf1fa87decfaf5b0a0cdeda3c31f6274}\label{classNeuron_adf1fa87decfaf5b0a0cdeda3c31f6274}} 
+void {\bfseries set\+Input} (double I)
+\item 
+\mbox{\Hypertarget{classNeuron_a2fadbcec4519684fc8b33de1ae6891f9}\label{classNeuron_a2fadbcec4519684fc8b33de1ae6891f9}} 
+void {\bfseries setJ} (double J)
+\item 
+\mbox{\Hypertarget{classNeuron_a5e39733954fcc0ada96207b39fe93cfd}\label{classNeuron_a5e39733954fcc0ada96207b39fe93cfd}} 
+void {\bfseries setG} (double g)
+\item 
+\mbox{\Hypertarget{classNeuron_a14ca97731bce04fa5af8f6919e77e83e}\label{classNeuron_a14ca97731bce04fa5af8f6919e77e83e}} 
+void {\bfseries set\+Eta} (double eta)
+\item 
+bool \hyperlink{classNeuron_a673bf2af51dc5ddd7e328bc00c235af2}{update} (double h, long step, int poisson)
+\item 
+void \hyperlink{classNeuron_ac60114eae02b3e9e8cd41a7684a1da1e}{resize\+Buffer} (int i)
+\item 
+void \hyperlink{classNeuron_aa4ac5a89e47de7e556c8f6e4f7936d38}{compute\+Constants} (double h)
+\item 
+\mbox{\Hypertarget{classNeuron_a8a86e93b1619baf27aaf1dd1ff9fc799}\label{classNeuron_a8a86e93b1619baf27aaf1dd1ff9fc799}} 
+bool {\bfseries is\+Refractory} ()
+\item 
+void \hyperlink{classNeuron_a35f21c29541f5f1c429236fe8f3664c8}{fill\+Targets} (unsigned int i)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classNeuron_aa4ac5a89e47de7e556c8f6e4f7936d38}\label{classNeuron_aa4ac5a89e47de7e556c8f6e4f7936d38}} 
+\index{Neuron@{Neuron}!compute\+Constants@{compute\+Constants}}
+\index{compute\+Constants@{compute\+Constants}!Neuron@{Neuron}}
+\subsubsection{\texorpdfstring{compute\+Constants()}{computeConstants()}}
+{\footnotesize\ttfamily void Neuron\+::compute\+Constants (\begin{DoxyParamCaption}\item[{double}]{h }\end{DoxyParamCaption})}
+
+Computes c1\+\_\+, c2\+\_\+ and nu\+\_\+ext\+\_\+ \mbox{\Hypertarget{classNeuron_a35f21c29541f5f1c429236fe8f3664c8}\label{classNeuron_a35f21c29541f5f1c429236fe8f3664c8}} 
+\index{Neuron@{Neuron}!fill\+Targets@{fill\+Targets}}
+\index{fill\+Targets@{fill\+Targets}!Neuron@{Neuron}}
+\subsubsection{\texorpdfstring{fill\+Targets()}{fillTargets()}}
+{\footnotesize\ttfamily void Neuron\+::fill\+Targets (\begin{DoxyParamCaption}\item[{unsigned int}]{i }\end{DoxyParamCaption})}
+
+Fills the targets vector with the neuron i \mbox{\Hypertarget{classNeuron_ac60114eae02b3e9e8cd41a7684a1da1e}\label{classNeuron_ac60114eae02b3e9e8cd41a7684a1da1e}} 
+\index{Neuron@{Neuron}!resize\+Buffer@{resize\+Buffer}}
+\index{resize\+Buffer@{resize\+Buffer}!Neuron@{Neuron}}
+\subsubsection{\texorpdfstring{resize\+Buffer()}{resizeBuffer()}}
+{\footnotesize\ttfamily void Neuron\+::resize\+Buffer (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+Resizes the ring buffer of the neuron 
+\begin{DoxyParams}{Parameters}
+{\em i} & size we want the buffer to have \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classNeuron_a673bf2af51dc5ddd7e328bc00c235af2}\label{classNeuron_a673bf2af51dc5ddd7e328bc00c235af2}} 
+\index{Neuron@{Neuron}!update@{update}}
+\index{update@{update}!Neuron@{Neuron}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily bool Neuron\+::update (\begin{DoxyParamCaption}\item[{double}]{h,  }\item[{long}]{step,  }\item[{int}]{poisson }\end{DoxyParamCaption})}
+
+Updates neuron state 
+\begin{DoxyParams}{Parameters}
+{\em h} & timestep size \\
+\hline
+{\em step} & number of the step we are in \\
+\hline
+{\em poisson} & background noise, random with a poisson distribution \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+spike boolean if the neuron spiked or not 
+\end{DoxyReturn}
+updates the neuron refractory period
+
+If the potential reaches the threshold
+
+neuron is refractory
+
+stores spike time
+
+counts up new spike
+
+computes where we Read in our buffer
+
+if the neuron is refractory, potential is 0
+
+otherwise we update the potential following the formula
+
+updates the neuron clock 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cecilia/\+Desktop/\+Projet/neuron.\+hpp\item 
+/\+Users/\+Cecilia/\+Desktop/\+Projet/neuron.\+cpp\end{DoxyCompactItemize}

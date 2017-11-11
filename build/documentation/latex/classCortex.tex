@@ -1,0 +1,93 @@
+\hypertarget{classCortex}{}\section{Cortex Class Reference}
+\label{classCortex}\index{Cortex@{Cortex}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCortex_ae3641e73ba7f598d43bc6f75f987b4fd}\label{classCortex_ae3641e73ba7f598d43bc6f75f987b4fd}} 
+{\bfseries Cortex} (\hyperlink{classCortex}{Cortex} const \&another)
+\item 
+void \hyperlink{classCortex_a8bb28e0c377f760af36db4114c29a519}{init\+Neurons} (double time, double h, double g, double eta)
+\item 
+void \hyperlink{classCortex_a65acfddf2eb9c9877fd7f947ed47c655}{init\+Connections} ()
+\item 
+void \hyperlink{classCortex_a17e7aeb919c1c567c0cc07334487db11}{update\+Neurons} (double h, long step\+\_\+start, long step\+\_\+stop)
+\item 
+void \hyperlink{classCortex_a2025c7e3493b8e740ee8de135e414522}{print\+Time\+Spikes} ()
+\item 
+void \hyperlink{classCortex_a9f01f06ef18c8632606f3425083850c3}{save\+To\+File} (std\+::ofstream \&file)
+\item 
+\mbox{\Hypertarget{classCortex_aec2f3529599592c24c1479f18359f422}\label{classCortex_aec2f3529599592c24c1479f18359f422}} 
+void {\bfseries set\+Neuron\+Input} (size\+\_\+t i, double input)
+\item 
+\mbox{\Hypertarget{classCortex_ac1a24c99cc119463aa4c260be2e6bfc6}\label{classCortex_ac1a24c99cc119463aa4c260be2e6bfc6}} 
+void {\bfseries delete\+Neurons} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classCortex_a65acfddf2eb9c9877fd7f947ed47c655}\label{classCortex_a65acfddf2eb9c9877fd7f947ed47c655}} 
+\index{Cortex@{Cortex}!init\+Connections@{init\+Connections}}
+\index{init\+Connections@{init\+Connections}!Cortex@{Cortex}}
+\subsubsection{\texorpdfstring{init\+Connections()}{initConnections()}}
+{\footnotesize\ttfamily void Cortex\+::init\+Connections (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Initilization of all the connections between neurons Each neuron receive input nb\+\_\+connections\+\_\+exc\+\_\+ from random excitatory neurons and nb\+\_\+connections\+\_\+inhib\+\_\+ from random inhibitory neurons Random neurons are chosen with a uniform distribution \mbox{\Hypertarget{classCortex_a8bb28e0c377f760af36db4114c29a519}\label{classCortex_a8bb28e0c377f760af36db4114c29a519}} 
+\index{Cortex@{Cortex}!init\+Neurons@{init\+Neurons}}
+\index{init\+Neurons@{init\+Neurons}!Cortex@{Cortex}}
+\subsubsection{\texorpdfstring{init\+Neurons()}{initNeurons()}}
+{\footnotesize\ttfamily void Cortex\+::init\+Neurons (\begin{DoxyParamCaption}\item[{double}]{time,  }\item[{double}]{h,  }\item[{double}]{g,  }\item[{double}]{eta }\end{DoxyParamCaption})}
+
+Initialization of the neurons in the cortex, their g, eta, J and size of their buffer 
+\begin{DoxyParams}{Parameters}
+{\em time} & to initialize the neuron clock (time at which it is created) \\
+\hline
+{\em h} & time step size \\
+\hline
+{\em g} & =Je/\+Ji \\
+\hline
+{\em eta} & =nu\+\_\+ext/nu\+\_\+thr \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCortex_a2025c7e3493b8e740ee8de135e414522}\label{classCortex_a2025c7e3493b8e740ee8de135e414522}} 
+\index{Cortex@{Cortex}!print\+Time\+Spikes@{print\+Time\+Spikes}}
+\index{print\+Time\+Spikes@{print\+Time\+Spikes}!Cortex@{Cortex}}
+\subsubsection{\texorpdfstring{print\+Time\+Spikes()}{printTimeSpikes()}}
+{\footnotesize\ttfamily void Cortex\+::print\+Time\+Spikes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Displays when spikes occured for each neuron \mbox{\Hypertarget{classCortex_a9f01f06ef18c8632606f3425083850c3}\label{classCortex_a9f01f06ef18c8632606f3425083850c3}} 
+\index{Cortex@{Cortex}!save\+To\+File@{save\+To\+File}}
+\index{save\+To\+File@{save\+To\+File}!Cortex@{Cortex}}
+\subsubsection{\texorpdfstring{save\+To\+File()}{saveToFile()}}
+{\footnotesize\ttfamily void Cortex\+::save\+To\+File (\begin{DoxyParamCaption}\item[{std\+::ofstream \&}]{file }\end{DoxyParamCaption})}
+
+Saves in a file when each neuron had a spike \mbox{\Hypertarget{classCortex_a17e7aeb919c1c567c0cc07334487db11}\label{classCortex_a17e7aeb919c1c567c0cc07334487db11}} 
+\index{Cortex@{Cortex}!update\+Neurons@{update\+Neurons}}
+\index{update\+Neurons@{update\+Neurons}!Cortex@{Cortex}}
+\subsubsection{\texorpdfstring{update\+Neurons()}{updateNeurons()}}
+{\footnotesize\ttfamily void Cortex\+::update\+Neurons (\begin{DoxyParamCaption}\item[{double}]{h,  }\item[{long}]{step\+\_\+start,  }\item[{long}]{step\+\_\+stop }\end{DoxyParamCaption})}
+
+updates all the neurons in the cortex during a given time interval 
+\begin{DoxyParams}{Parameters}
+{\em h} & time step size \\
+\hline
+{\em step\+\_\+start} & step when we start updating \\
+\hline
+{\em step\+\_\+stop} & step when we stop updating \\
+\hline
+\end{DoxyParams}
+computes c1\+\_\+, c2\+\_\+ and nu\+\_\+ext\+\_\+ for each neurons
+
+calculates the size of the buffer, all the neurons have the same size
+
+For each time step between step\+\_\+start and step\+\_\+stop
+
+calculates where we Write in the buffer, same for all neurons
+
+We update every neuron and if the neuron i had a spike
+
+Each of his targets receives J in their buffer 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/\+Cecilia/\+Desktop/\+Projet/cortex.\+hpp\item 
+/\+Users/\+Cecilia/\+Desktop/\+Projet/cortex.\+cpp\end{DoxyCompactItemize}
