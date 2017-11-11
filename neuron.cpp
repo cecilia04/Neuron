@@ -5,15 +5,16 @@
 #include <cassert>
 #include <random>
 
-Neuron::Neuron() /*! constructor */
+Neuron::Neuron()
 	: potential_(0), nb_spikes_(0) {}
 	
-Neuron::Neuron(const Neuron& another) /*! destructor */
+Neuron::Neuron(const Neuron& another)
 	: potential_(another.potential_), nb_spikes_(another.potential_), time_spikes_(another.time_spikes_) {}
 	
-Neuron::~Neuron() {} /*! copy constructor */
+Neuron::~Neuron() {}
 
-/**getters */
+//---------------------------GETTERS------------------------------
+
 double Neuron::getPotential() const {
 	return potential_;
 }
@@ -54,7 +55,8 @@ double Neuron::getNuExt() const {
 	return nu_ext_;
 }
 
-/**setters */
+//---------------------------SETTERS-------------------------------
+
 void Neuron::setClock(double time) {
 	clock_ = time;
 }
@@ -79,23 +81,22 @@ void Neuron::setEta(double eta) {
 	eta_ = eta;
 }
 
-/**other functions */
+//-----------------------OTHER FUNCTIONS----------------------------
 
 /** Updates neuron state
- * @param output the file where we write membrane potential
  * @param h timestep size
  * @param step number of the step we are in
+ * @param poisson background noise, random with a poisson distribution
  * @return spike boolean if the neuron spiked or not
  */
-
 bool Neuron::update(double h, long step, int poisson) {
 	bool spike = false;
 		
 	if (refractory_steps_ > 0) {--refractory_steps_;} /*! updates the neuron refractory period */
 		 
-	if (potential_ >= threshold_) {
+	if (potential_ >= threshold_) {		/*!If the potential reaches the threshold */
 
-		refractory_steps_ = refractory_time_ / h; /*! potential has reached threshold so neuron is refractory */
+		refractory_steps_ = refractory_time_ / h; /*! neuron is refractory */
 			
 		time_spikes_.push_back(clock_); /*! stores spike time */
 			
@@ -105,12 +106,12 @@ bool Neuron::update(double h, long step, int poisson) {
 			
 	}
 	
-	const auto R = step % (ring_buffer_.size()); /*! where we Read in our buffer */
+	const auto R = step % (ring_buffer_.size()); /*! computes where we Read in our buffer */
 	assert(R < ring_buffer_.size());
 		
-	if (isRefractory()) { /*! if the neuron is refractory */
+	if (isRefractory()) { 	/*! if the neuron is refractory, potential is 0 */
 		potential_ = 0.0;
-	} else {
+	} else { 				/*! otherwise we update the potential following the formula */
 		assert(spike == 0);
 		potential_ = c1_ * potential_ + Iext_ * c2_ + ring_buffer_[R] + 0.1 * poisson;
 	}
@@ -128,6 +129,7 @@ void Neuron::resizeBuffer(int i) {
 	ring_buffer_.resize(i);
 }
 
+/** Computes c1_, c2_ and nu_ext_ */
 void Neuron::computeConstants(double h) {
 	c1_ = exp(-h/tau_);
 	c2_ = resistance_ * (1-c1_);
@@ -138,6 +140,7 @@ bool Neuron::isRefractory() {
 	return (refractory_steps_ > 0);
 }
 
+/** Fills the targets vector with the neuron i */
 void Neuron::fillTargets(unsigned int i) {
 	targets_.push_back(i);
 }

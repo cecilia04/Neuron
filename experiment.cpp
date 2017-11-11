@@ -8,6 +8,14 @@ Experiment::~Experiment() {}
 Experiment::Experiment(Experiment const& another)
 	:cortex_(another.cortex_) {}
 	
+	
+/** This function runs an entire simulation to create the datas for one graph
+ * @param g =Je/Ji
+ * @param eta =nu_ext/nu_thr
+ * @param h size of the steps of simulation
+ * @param time how long must last the simulation
+ * @param file_graph file where we write when spikes occured for each neuron
+ */
 void Experiment::simulation(double g, double eta, double h, double time, std::ofstream & file_graph) {
 	std::cout << "Initializing neurons ..." << std::endl;
 	cortex_.initNeurons(0, h, g, eta);

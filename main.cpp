@@ -4,9 +4,11 @@
 #include <random>
 
 int main() {
-	const double h = 0.1;
+	const double h = 0.1;  /*! Size of the steps of simulation */
 	Experiment exp;
 	
+//-----------------------------FIRST SIMULATION------------------------------
+
 	std::ofstream output_1;
 	output_1.open("Exp1.csv");
 	
@@ -19,6 +21,8 @@ int main() {
 	output_1.close();
 	
 	std::cout << "Experiment 1 done" << std::endl;
+
+//-----------------------------SECOND SIMULATION-----------------------------
 	
 	std::ofstream output_2;
 	output_2.open("Exp2.csv");
@@ -33,6 +37,8 @@ int main() {
 	
 	std::cout << "Experiment 2 done" << std::endl;
 	
+//-----------------------------THIRD SIMULATION------------------------------
+	
 	std::ofstream output_3;
 	output_3.open("Exp3.csv");
 	
@@ -45,6 +51,8 @@ int main() {
 	output_3.close();
 	
 	std::cout << "Experiment 3 done" << std::endl;
+
+//-----------------------------FOURTH SIMULATION------------------------------
 
 	std::ofstream output_4;
 	output_4.open("Exp4.csv");

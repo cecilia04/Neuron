@@ -23,17 +23,17 @@ class Cortex
 	
 	public:
 	
-	Cortex(); /*! constructor */
+	Cortex();
 	
-	~Cortex(); /*! destructor */
+	~Cortex();
 	
-	Cortex(Cortex const& another); /*! copy constructor */
+	Cortex(Cortex const& another);
 	
-	void initNeurons(double time, double h, double g, double eta); /*! initialization of the neurons in the cortex */
+	void initNeurons(double time, double h, double g, double eta);
 	
-	void initConnections(); /*! initialization of connexions between the neurons */
+	void initConnections();
 	
-	void updateNeurons(double h, long step_start, long step_stop); /*! updates all the neurons in the cortex */
+	void updateNeurons(double h, long step_start, long step_stop);
 	
 	void printTimeSpikes();
 	

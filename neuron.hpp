@@ -18,10 +18,10 @@ class Neuron
 	const double tau_ = 20.0;
 	const double threshold_ = 20.0;
 	double refractory_time_ = 2;
-	long refractory_steps_ = 0.0; /*! steps per refractory period */
+	long refractory_steps_ = 0.0; // steps per refractory period
 	
 	double g_ = 5;
-	double eta_ = 2; /*! nu ext / nu thr */
+	double eta_ = 2; // nu ext / nu thr
 	
 	
 	double Iext_ = 0;
@@ -29,10 +29,11 @@ class Neuron
 	
 	double nu_ext_;
 
-	double c1_; /*! integration constants */
+	//integration constants
+	double c1_; 
 	double c2_;
 	
-	std::vector<double> time_spikes_; /*! stores the time when a spike occures */
+	std::vector<double> time_spikes_; // stores the time when a spike occures
 	
 	double clock_ = 0.0;
 	double delay_ = 1.5;
@@ -42,13 +43,13 @@ class Neuron
 	
 	public:
 	
-	Neuron(); /*! constructor */
+	Neuron();
 	
-	~Neuron(); /*! destructor */
+	~Neuron();
 	
-	Neuron(const Neuron& another); /*! copy constructor */
+	Neuron(const Neuron& another);
 	
-	/** getters */
+	//getters
 	double getPotential() const;
 	
 	unsigned int getNbSpikes() const;
@@ -69,7 +70,7 @@ class Neuron
 	
 	double getNuExt() const;
 	
-	/** setters */
+	//setters
 	void setClock(double time);
 	
 	void setBuffer(size_t i, double J);
@@ -82,7 +83,7 @@ class Neuron
 	
 	void setEta(double eta);
 	
-	/** other functions */
+	//other functions
 	bool update(double h, long step, int poisson);
 	
 	void resizeBuffer(int i);

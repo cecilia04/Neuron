@@ -3,19 +3,20 @@
 #include <random>
 #include <algorithm>
 
-Cortex::Cortex() {} /*! constructor */
+Cortex::Cortex() {}
 	
-/** destructor */
 Cortex::~Cortex() {
 	deleteNeurons();
 } 
 	
-Cortex::Cortex(Cortex const& another) /*! copy constructor */
+Cortex::Cortex(Cortex const& another)
 	:neurons_(another.neurons_) {}
 
-/** Initialization of the neurons in the cortex
+/** Initialization of the neurons in the cortex, their g, eta, J and size of their buffer
  * @param time to initialize the neuron clock (time at which it is created)
  * @param h time step size
+ * @param g =Je/Ji
+ * @param eta =nu_ext/nu_thr
  */
 void Cortex::initNeurons(double time, double h, double g, double eta) {
 	for (unsigned int i(0); i < nb_excitatory_; ++i) {
@@ -39,7 +40,11 @@ void Cortex::initNeurons(double time, double h, double g, double eta) {
 	assert(neurons_.size() == nb_neurons_);
 }
 
-/** Initilization of all the connections between neurons */
+/** Initilization of all the connections between neurons
+ * Each neuron receive input nb_connections_exc_ from  random excitatory neurons 
+ * and nb_connections_inhib_ from random inhibitory neurons
+ * Random neurons are chosen with a uniform distribution 
+ */
 void Cortex::initConnections() {
 	
 	static std::random_device rd;
@@ -58,10 +63,10 @@ void Cortex::initConnections() {
 }
 
 
-/**updates all the neurons in the cortex
- * @param output file where we write membrane potential
+/**updates all the neurons in the cortex during a given time interval
  * @param h time step size
- * @param step number of the step we are in
+ * @param step_start step when we start updating
+ * @param step_stop step when we stop updating
  */
 void Cortex::updateNeurons(double h, long step_start, long step_stop) {
 	
@@ -70,27 +75,27 @@ void Cortex::updateNeurons(double h, long step_start, long step_stop) {
 	assert(step_start <= step_stop);
 	
 	for (auto n : neurons_) {
-		n->computeConstants(h);
+		n->computeConstants(h); /*! computes c1_, c2_ and nu_ext_ for each neurons */
 	}
 	
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
 	
 	size_t s = neurons_[0]->getBuffer().size(); /*! calculates the size of the buffer, all the neurons have the same size */
-	size_t D = s-1;
+	size_t D = s-1; //the buffer size is delay + 1 
 	
-	while (step_start < step_stop) {
+	while (step_start < step_stop) {    /*! For each time step between step_start and step_stop */
 		if(step_start%100==0) {std::cout << step_start << std::endl;}
 		
-		auto W = (step_start + D) % s; /*! where we Write in the buffer, same for all neurons */
+		auto W = (step_start + D) % s; /*! calculates where we Write in the buffer, same for all neurons */
 		assert(W < s);
 		
 		for (size_t i(0); i < neurons_.size(); ++i) {
 			
 			static std::poisson_distribution<> dis(neurons_[i]->getNuExt() * h); 
 			
-			if (neurons_[i]->update(h, step_start, dis(gen))) { /*! if the neuron i had a spike */
-				for (auto target : neurons_[i]->getTargets()) {
+			if (neurons_[i]->update(h, step_start, dis(gen))) { 		/*! We update every neuron and if the neuron i had a spike */
+				for (auto target : neurons_[i]->getTargets()) { 	/*! Each of his targets receives J in their buffer */
 					neurons_[target]->setBuffer(W, neurons_[i]->getJ());
 				}
 			}
@@ -109,6 +114,7 @@ void Cortex::printTimeSpikes() {
 	}
 }
 
+/** Saves in a file when each neuron had a spike */
 void Cortex::saveToFile(std::ofstream & file) {
 	for (unsigned int i(0); i < nb_neurons_ ; ++i) {
 		for (size_t j(0); j < neurons_[i]->getTimeSpikes().size(); ++j) {
